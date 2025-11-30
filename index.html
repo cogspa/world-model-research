@@ -355,10 +355,16 @@
 
         /* Contact Form Styles */
         .contact-form {
-            margin-top: 32px;
+            margin-top: 24px;
+            margin-bottom: 32px;
             display: grid;
             gap: 18px;
-            max-width: 600px;
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-subtle);
+            background: radial-gradient(circle at top right, rgba(124, 92, 255, 0.08), transparent 60%),
+                rgba(10, 11, 35, 0.6);
+            box-shadow: var(--shadow-subtle);
         }
 
         .form-group {
@@ -556,21 +562,6 @@
                     and advanced visualization. For inquiries about collaboration, research opportunities,
                     or project discussions, please reach out directly.
                 </p>
-                <div class="contact-box">
-                    <p><strong>All inquiries:</strong></p>
-                    <p>
-                        <strong>Contact:</strong> Joe Micallef<br />
-                        <strong>Email:</strong> <a
-                            href="mailto:joe@worldmodelresearch.com">joe@worldmodelresearch.com</a><br />
-                        <strong>Phone:</strong> <a href="tel:+13109851517">310-985-1517</a><br />
-                    </p>
-                    <p style="margin-top: 8px; font-size: 13px;">
-                        Joe combines decades of experience in animation, media, and technical education
-                        with a deep focus on world models, synthetic simulation, and hybrid 2D/3D environments
-                        for the next generation of AI.
-                    </p>
-                </div>
-
                 <form class="contact-form" name="contact" method="POST" data-netlify="true">
                     <div class="form-group">
                         <label class="form-label" for="name">Name</label>
@@ -590,6 +581,21 @@
                         <button type="submit" class="btn btn-primary">Send Message</button>
                     </div>
                 </form>
+
+                <div class="contact-box">
+                    <p><strong>All inquiries:</strong></p>
+                    <p>
+                        <strong>Contact:</strong> Joe Micallef<br />
+                        <strong>Email:</strong> <a
+                            href="mailto:joe@worldmodelresearch.com">joe@worldmodelresearch.com</a><br />
+                        <strong>Phone:</strong> <a href="tel:+13109851517">310-985-1517</a><br />
+                    </p>
+                    <p style="margin-top: 8px; font-size: 13px;">
+                        Joe combines decades of experience in animation, media, and technical education
+                        with a deep focus on world models, synthetic simulation, and hybrid 2D/3D environments
+                        for the next generation of AI.
+                    </p>
+                </div>
             </section>
         </main>
 
