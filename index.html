@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>World Model Research – Synthetic Worlds for Intelligent AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        :root {
+            --bg: #050616;
+            --bg-alt: #07081c;
+            --accent: #7c5cff;
+            --accent-soft: rgba(124, 92, 255, 0.14);
+            --accent-strong: #ffb347;
+            --text-main: #f4f5ff;
+            --text-muted: #a3a6c7;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --max-width: 980px;
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --shadow-soft: 0 24px 80px rgba(0, 0, 0, 0.7);
+            --shadow-subtle: 0 16px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                "SF Pro Text", "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, #17192e 0, #050616 50%, #02010a 100%);
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            padding: 18px 20px 10px;
+        }
+
+        .header-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-mark {
+            width: 32px;
+            height: 32px;
+            border-radius: 12px;
+            background: radial-gradient(circle at 20% 0, #ffe48a, #ff7a7a 50%, #7c5cff 85%);
+            box-shadow: 0 0 24px rgba(124, 92, 255, 0.8);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text span:first-child {
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+
+        .logo-text span:last-child {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        main {
+            flex: 1;
+        }
+
+        .hero {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 40px 20px 32px;
+            display: grid;
+            grid-template-columns: minmax(0, 3fr) minmax(0, 2.2fr);
+            gap: 32px;
+            align-items: center;
+        }
+
+        .hero-heading {
+            font-size: clamp(30px, 3.4vw, 40px);
+            line-height: 1.1;
+            margin-bottom: 12px;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(120deg, #fff6e2, #ffb347, #7c5cff);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .hero-tagline {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.7;
+            max-width: 520px;
+            margin-bottom: 18px;
+        }
+
+        .hero-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(10, 11, 32, 0.96);
+            color: var(--text-muted);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            margin-bottom: 10px;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-top: 4px;
+            margin-bottom: 8px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            padding: 8px 18px;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid transparent;
+            cursor: pointer;
+            background: transparent;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(120deg, var(--accent), var(--accent-strong));
+            color: #050616;
+            box-shadow: 0 14px 32px rgba(124, 92, 255, 0.7);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 18px 40px rgba(124, 92, 255, 0.9);
+        }
+
+        .btn-ghost {
+            border-color: rgba(255, 255, 255, 0.16);
+            color: var(--text-muted);
+        }
+
+        .btn-ghost:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            color: var(--text-main);
+        }
+
+        .hero-footnote {
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .hero-card {
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-subtle);
+            background: radial-gradient(circle at top left, rgba(124, 92, 255, 0.2), transparent 55%),
+                rgba(7, 8, 28, 0.98);
+            box-shadow: var(--shadow-soft);
+            padding: 18px 18px 16px;
+        }
+
+        .hero-card-header {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .hero-card-body {
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px;
+            background: radial-gradient(circle at top, rgba(255, 180, 125, 0.16), transparent 60%),
+                #050616;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+
+        .hero-card-body h3 {
+            margin: 0 0 6px;
+            font-size: 15px;
+            color: var(--text-main);
+        }
+
+        .hero-card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .tag {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: rgba(10, 11, 40, 0.96);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: var(--text-muted);
+        }
+
+        .hero-card-footer {
+            margin-top: 10px;
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hero-card-footer span {
+            font-size: 11px;
+        }
+
+        .hero-card-footer strong {
+            color: var(--accent-strong);
+        }
+
+        .section {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 24px 20px 32px;
+        }
+
+        .section+.section {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .section-kicker {
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            font-size: 11px;
+            color: var(--accent-strong);
+            margin-bottom: 6px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .section-text {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.8;
+            max-width: 720px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 18px;
+            margin-top: 16px;
+        }
+
+        .card {
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+            background: rgba(7, 8, 28, 0.98);
+            box-shadow: var(--shadow-subtle);
+            padding: 14px 14px 12px;
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .card h3 {
+            margin: 0 0 6px;
+            font-size: 14px;
+            color: var(--text-main);
+        }
+
+        .contact-box {
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(4, 5, 18, 0.98);
+            padding: 18px 16px 16px;
+            margin-top: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .contact-box strong {
+            color: var(--accent-strong);
+        }
+
+        footer {
+            padding: 16px 20px 22px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .footer-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+        }
+
+        @media (max-width: 820px) {
+            .hero {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero {
+                padding-top: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <header>
+            <div class="header-inner">
+                <div class="logo">
+                    <div class="logo-mark"></div>
+                    <div class="logo-text">
+                        <span>World Model Research</span>
+                        <span>World models, simulation & synthetic worlds</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <!-- Hero -->
+            <section class="hero">
+                <div>
+                    <div class="hero-pill">World Models · Simulation · Synthetic Worlds</div>
+                    <h1 class="hero-heading">
+                        <span class="hero-gradient">Where worlds are designed</span><br />
+                        and intelligence is formed.
+                    </h1>
+                    <p class="hero-tagline">
+                        World Model Research is an independent AI innovation studio focused on
+                        <strong>world models</strong> as the next foundation for AI and ML training.
+                        We build synthetic 2D/3D worlds, authored anomalies, and novel physics regimes
+                        where agents learn from experience, prediction, and interaction—not just text.
+                    </p>
+                    <div class="hero-actions">
+                        <button class="btn btn-primary"
+                            onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+                            Contact World Model Research
+                        </button>
+                        <button class="btn btn-ghost"
+                            onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">
+                            Learn More
+                        </button>
+                    </div>
+                    <div class="hero-footnote">
+                        Founder &amp; Research Lead: <strong>Joe Micallef</strong> · Blending AI, simulation, and hybrid
+                        2D/3D worlds.
+                    </div>
+                </div>
+
+                <aside class="hero-card">
+                    <div class="hero-card-header">Current Focus</div>
+                    <div class="hero-card-body">
+                        <h3>World Models as the Next Training Substrate</h3>
+                        <p>
+                            Moving beyond LLMs by training agents in richly structured synthetic worlds.
+                            We explore Dreamer- and JEPA-style architectures that imagine futures, learn causal
+                            structure,
+                            and adapt to authored surprises in hybrid 2D/3D environments.
+                        </p>
+                        <div class="hero-card-tags">
+                            <span class="tag">World Models</span>
+                            <span class="tag">Synthetic Physics</span>
+                            <span class="tag">2D/3D Hybrid Worlds</span>
+                            <span class="tag">Authored Anomalies</span>
+                        </div>
+                    </div>
+                    <div class="hero-card-footer">
+                        <span>Research, design, and simulation with a creative edge.</span>
+                        <span><strong>Los Angeles · Remote</strong></span>
+                    </div>
+                </aside>
+            </section>
+
+            <!-- About -->
+            <section class="section" id="about">
+                <div class="section-kicker">About</div>
+                <h2 class="section-title">What is World Model Research?</h2>
+                <p class="section-text">
+                    World Model Research is dedicated to exploring how intelligent agents can learn from
+                    <strong>worlds</strong> instead of just data. As the limitations of large language models become
+                    clearer,
+                    world models are emerging as a successor architecture—systems that build internal representations
+                    of dynamics, causality, and affordances by interacting with synthetic environments.
+                    <br /><br />
+                    We design and study <strong>2D/3D hybrid simulation environments</strong>, authored anomalies, and
+                    novel physics regimes that challenge agents to understand causality, adapt to surprises,
+                    and imagine future states. This work blends machine learning, procedural and artist-driven
+                    world-building,
+                    animation, and creative technology.
+                </p>
+            </section>
+
+            <!-- Work areas -->
+            <section class="section">
+                <div class="section-kicker">Focus Areas</div>
+                <h2 class="section-title">Research &amp; Development</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>World-Model Architectures</h3>
+                        <p>
+                            Experimenting with Dreamer-style RSSM, JEPA-inspired predictive models, and other
+                            latent-dynamics
+                            architectures that learn to predict and imagine future states inside synthetic worlds.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3>Synthetic Physics Environments</h3>
+                        <p>
+                            Building worlds with both realistic and fantastical physics—gravity, flight, portals,
+                            spells—
+                            to test how agents generalize across regimes and learn causal structure.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3>Authored Anomalies</h3>
+                        <p>
+                            Designing hand-crafted, meaningful surprises (rule shifts, visual glitches, narrative
+                            triggers)
+                            that teach agents to detect change, adapt quickly, and reason beyond simple patterns.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3>Hybrid 2D/3D &amp; World-Building Tools</h3>
+                        <p>
+                            Combining 3D simulation with 2D animation, billboards, and visual overlays to create worlds
+                            that are
+                            both expressive for humans and rich training substrates for machines.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3>Multi-Agent &amp; Multi-View Data</h3>
+                        <p>
+                            Generating datasets with first-person views, minimaps, and schematic representations across
+                            multiple agents
+                            to support multi-view world-model training and representation learning.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3>Curriculum Worlds</h3>
+                        <p>
+                            Designing sequences of worlds with increasing complexity and shifting physics
+                            to study curriculum learning, cross-world transfer, and structural generalization.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact -->
+            <section class="section" id="contact">
+                <div class="section-kicker">Contact</div>
+                <h2 class="section-title">Get in Touch</h2>
+                <p class="section-text">
+                    World Model Research is currently in an active exploratory and development phase,
+                    collaborating at the intersection of AI research, simulation, creative technology,
+                    and advanced visualization. For inquiries about collaboration, research opportunities,
+                    or project discussions, please reach out directly.
+                </p>
+                <div class="contact-box">
+                    <p><strong>All inquiries:</strong></p>
+                    <p>
+                        <strong>Contact:</strong> Joe Micallef<br />
+                        <strong>Phone:</strong> <a href="tel:+13109851517">310-985-1517</a><br />
+                    </p>
+                    <p style="margin-top: 8px; font-size: 13px;">
+                        Joe combines decades of experience in animation, media, and technical education
+                        with a deep focus on world models, synthetic simulation, and hybrid 2D/3D environments
+                        for the next generation of AI.
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="footer-inner">
+                <div>
+                    © <span id="year"></span> World Model Research — Where worlds are designed, and intelligence is
+                    formed.
+                </div>
+                <div>
+                    Contact: <strong>Joe Micallef</strong> · <a href="tel:+13109851517">310-985-1517</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>
