@@ -562,7 +562,8 @@
                     and advanced visualization. For inquiries about collaboration, research opportunities,
                     or project discussions, please reach out directly.
                 </p>
-                <form class="contact-form" name="contact" method="POST" data-netlify="true">
+                <form class="contact-form" name="contact" method="POST" data-netlify="true" action="/success.html">
+                    <input type="hidden" name="form-name" value="contact" />
                     <div class="form-group">
                         <label class="form-label" for="name">Name</label>
                         <input class="form-input" type="text" id="name" name="name" placeholder="Your name" required />
