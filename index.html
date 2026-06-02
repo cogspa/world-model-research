@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <title>World Model Research – Synthetic Worlds for Intelligent AI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <style>
         :root {
             --bg: #050616;
@@ -406,6 +407,492 @@
             resize: vertical;
             line-height: 1.6;
         }
+
+        /* World Model Ecosystem Euler Diagram Styles */
+        :root {
+            --panel: rgba(7, 8, 28, 0.85);
+            --panel-strong: rgba(7, 8, 28, 0.96);
+        }
+
+        #viewer-container {
+            position: relative;
+            width: 100%;
+            margin-top: 24px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-subtle);
+            background: rgba(7, 8, 28, 0.5);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        #chart {
+            position: relative;
+            width: 100%;
+            height: 650px;
+            overflow: hidden;
+            z-index: 1; /* Positioned below tooltip and panels */
+            border-bottom-left-radius: var(--radius-lg);
+            border-bottom-right-radius: var(--radius-lg);
+        }
+
+        #chart svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .domain-circle {
+            mix-blend-mode: screen;
+            filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.45));
+            cursor: pointer;
+            transition: stroke-width 180ms ease, filter 180ms ease, opacity 180ms ease;
+        }
+
+        .domain-circle:hover {
+            stroke-width: 6px;
+            filter: drop-shadow(0 20px 40px rgba(255, 255, 255, 0.22));
+        }
+
+        .domain-label {
+            font-family: inherit;
+            fill: white;
+            font-weight: 800;
+            font-size: 16px;
+            text-anchor: middle;
+            paint-order: stroke;
+            stroke: #050616;
+            stroke-width: 5px;
+            stroke-linejoin: round;
+            pointer-events: none;
+            letter-spacing: -0.02em;
+        }
+
+        .domain-score {
+            font-family: inherit;
+            fill: var(--text-muted);
+            font-size: 11px;
+            font-weight: 600;
+            text-anchor: middle;
+            paint-order: stroke;
+            stroke: #050616;
+            stroke-width: 4px;
+            stroke-linejoin: round;
+            pointer-events: none;
+            letter-spacing: 0.01em;
+        }
+
+        .domain-sub {
+            font-family: inherit;
+            fill: var(--text-muted);
+            font-size: 10px;
+            font-weight: 500;
+            text-anchor: middle;
+            paint-order: stroke;
+            stroke: #050616;
+            stroke-width: 3.5px;
+            stroke-linejoin: round;
+            pointer-events: none;
+        }
+
+        .connector {
+            stroke: rgba(255, 255, 255, 0.5);
+            stroke-linecap: round;
+            stroke-dasharray: 6 8;
+            fill: none;
+            pointer-events: none;
+        }
+
+        .overlap-label {
+            font-family: inherit;
+            fill: #ffffff;
+            font-weight: 800;
+            font-size: 11px;
+            text-anchor: middle;
+            paint-order: stroke;
+            stroke: #050616;
+            stroke-width: 4.5px;
+            stroke-linejoin: round;
+            pointer-events: none;
+            letter-spacing: -0.01em;
+        }
+
+        .overlap-hotspot {
+            fill: rgba(255, 255, 255, 0.03);
+            stroke: rgba(255, 255, 255, 0.2);
+            stroke-width: 1.5;
+            stroke-dasharray: 4 6;
+            cursor: pointer;
+            transition: fill 140ms ease, stroke 140ms ease;
+        }
+
+        .overlap-hotspot:hover {
+            fill: rgba(255, 255, 255, 0.12);
+            stroke: rgba(255, 255, 255, 0.6);
+        }
+
+        .overlap-sub {
+            font-family: inherit;
+            fill: var(--accent-strong);
+            font-weight: 600;
+            font-size: 10px;
+            text-anchor: middle;
+            paint-order: stroke;
+            stroke: #050616;
+            stroke-width: 4px;
+            stroke-linejoin: round;
+            pointer-events: none;
+        }
+
+        .tooltip {
+            position: absolute;
+            max-width: 360px;
+            padding: 16px 18px 16px 36px; /* Room for close button on the left */
+            border-radius: 18px;
+            background: rgba(7, 8, 28, 0.4); /* 40% opacity background */
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-soft);
+            pointer-events: auto; /* Enable hover/clicks on links and close button */
+            opacity: 0;
+            transform: translateX(-50%); /* Horizontal center relative to target position */
+            transition: opacity 160ms ease, transform 160ms ease;
+            font-family: inherit;
+            font-size: 11px; /* 13px - 2px */
+            line-height: 1.55;
+            z-index: 100; /* Float below the panels-grid but above the chart */
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            color: #000000 !important; /* Force black text color */
+        }
+
+        .tooltip-close {
+            position: absolute;
+            top: 12px;
+            left: 10px;
+            background: transparent;
+            border: none;
+            color: #000000;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+            transition: color 0.15s ease, transform 0.15s ease;
+            z-index: 102;
+        }
+
+        .tooltip-close:hover {
+            color: #ef4444;
+            transform: scale(1.15);
+        }
+
+        .tooltip strong {
+            display: block;
+            color: #000000 !important; /* Force title text color to black */
+            font-size: 13px; /* 15px - 2px */
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .tooltip .meta {
+            color: #1a1a1a !important; /* Force metadata color to dark gray/black */
+            margin-bottom: 10px;
+            font-size: 10px; /* 12px - 2px */
+            font-weight: 700;
+        }
+
+        .tooltip ul {
+            margin: 8px 0;
+            padding-left: 18px;
+            color: #000000 !important; /* Force list elements color to black */
+        }
+
+        .tooltip li {
+            margin-bottom: 5px;
+            color: #000000 !important;
+        }
+
+        .tooltip .pill {
+            background: rgba(0, 0, 0, 0.08) !important;
+            border: 1px solid rgba(0, 0, 0, 0.16) !important;
+            color: #000000 !important;
+            font-size: 8px; /* 10px - 2px */
+        }
+
+        .panels-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr 1fr;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(7, 8, 28, 0.4) !important; /* 40% opacity background as requested */
+            border-bottom: 1px solid var(--border-subtle);
+            z-index: 110; /* Float above the SVG canvas and tooltip */
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top-left-radius: var(--radius-lg);
+            border-top-right-radius: var(--radius-lg);
+        }
+
+        .panel {
+            position: relative !important;
+            width: 100% !important;
+            left: auto !important;
+            right: auto !important;
+            top: auto !important;
+            bottom: auto !important;
+            border-radius: var(--radius-md) !important;
+            background: rgba(7, 8, 28, 0.4); /* Reduced background opacity to exactly 40% */
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-subtle);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            overflow: hidden;
+            z-index: 3;
+            align-self: start; /* Standard grid stretch alignment override */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .panel:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(7, 8, 28, 0.55); /* Reduced hover background opacity to 55% */
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 18px;
+            cursor: pointer; /* Accordion toggle pointer cursor */
+            user-select: none;
+            border-bottom: 1px solid var(--border-subtle);
+            transition: background-color 0.2s ease;
+        }
+
+        .panel-header:active {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .panel-header:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .panel.collapsed .panel-header {
+            border-bottom-color: transparent;
+        }
+
+        .panel-header h3 {
+            margin: 0;
+            color: white;
+            font-size: 12px; /* 14px - 2px */
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0;
+        }
+
+        .toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .panel .chevron {
+            transform: rotate(-180deg);
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+        }
+
+        .panel.collapsed .chevron {
+            transform: rotate(0deg);
+        }
+
+        .panel-content {
+            display: grid;
+            grid-template-rows: 1fr;
+            transition: grid-template-rows 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .panel.collapsed .panel-content {
+            grid-template-rows: 0fr;
+        }
+
+        .panel-body {
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .panel-body-inner {
+            padding: 16px 18px;
+            font-size: 11px; /* 13px - 2px */
+            line-height: 1.6;
+        }
+
+        .panel-body-inner strong {
+            color: white;
+        }
+
+        #detailsBody {
+            max-height: 380px; /* Limit height of details catalog to enable scrolling */
+            overflow-y: auto; /* Enable scroll down of all domains */
+            padding-right: 6px; /* Room for scrollbar */
+        }
+
+        /* Custom scrollbar for Domain Details catalog */
+        #detailsBody::-webkit-scrollbar {
+            width: 5px;
+        }
+        #detailsBody::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 999px;
+        }
+        #detailsBody::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+        }
+        #detailsBody::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        /* Domain Detail Card Design */
+        .domain-detail-card {
+            transition: all 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+            padding: 12px 14px;
+            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .domain-detail-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .domain-detail-card.active-highlight {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1.2fr auto auto;
+            gap: 8px 12px;
+            align-items: center;
+            font-size: 10px; /* 12px - 2px */
+        }
+
+        .swatch {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+            box-shadow: 0 0 8px currentColor;
+        }
+
+        .link-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .link-list a,
+        .small-link {
+            display: inline-flex;
+            align-items: center;
+            background: var(--accent-soft);
+            border: 1px solid rgba(124, 92, 255, 0.2);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 10px; /* 12px - 2px */
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .link-list a:hover,
+        .small-link:hover {
+            background: rgba(124, 92, 255, 0.2);
+            border-color: var(--accent);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            border: 1px solid rgba(124, 92, 255, 0.2);
+            color: var(--text-main);
+            font-size: 8px; /* 10px - 2px */
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        .toolbar {
+            position: absolute;
+            left: 50%;
+            bottom: 18px; /* Moved zoom controls to bottom to prevent overlap with floating panels */
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 4;
+            padding: 8px;
+            border-radius: 999px;
+            background: rgba(7, 8, 28, 0.4); /* exactly 40% opacity background */
+            border: 1px solid var(--border-subtle);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .toolbar button {
+            padding: 4px 12px !important;
+            font-size: 11px !important;
+            border-radius: 999px !important;
+        }
+
+        @media (max-width: 900px) {
+            .panels-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                padding: 12px;
+            }
+
+            #chart {
+                height: 500px;
+            }
+
+            #viewer-container {
+                padding: 12px;
+                background: rgba(7, 8, 28, 0.3);
+            }
+        }
     </style>
 </head>
 
@@ -552,6 +1039,99 @@
                 </div>
             </section>
 
+            <!-- World Model Viewer Section -->
+            <section class="section" id="world-model-viewer">
+                <div class="section-kicker">Ecosystem Map</div>
+                <h2 class="section-title">World Model Ecosystem: Weight + USD Alignment</h2>
+                <p class="section-text">
+                    Interactive Euler-style map using <strong>estimated concept scores</strong>, not measured market data.
+                    Circle size = <strong>Ecosystem Weight</strong>, a heuristic proxy for maturity, adoption, research
+                    visibility, and industry relevance. <strong>USD Alignment</strong> estimates how strongly each domain
+                    appears to connect to OpenUSD, scene graphs, simulation-ready 3D data, or USD-based workflows. Physical
+                    overlap shows meaningful workflow or research overlap.
+                </p>
+                <div id="viewer-container">
+                    <!-- Panels grid (accordion dropdowns directly below the main text) -->
+                    <div class="panels-grid">
+                        <!-- Score Guide Panel -->
+                        <div class="panel collapsed" id="statsPanel">
+                            <div class="panel-header" onclick="togglePanel('statsPanel')">
+                                <h3>
+                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-strong);"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                                    Score guide
+                                </h3>
+                                <button class="toggle-btn" aria-label="Toggle score guide">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="chevron"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                            </div>
+                            <div class="panel-content">
+                                <div class="panel-body">
+                                    <div class="panel-body-inner">
+                                        <div style="margin-bottom:12px; color: var(--text-muted);">These are estimated placeholder scores. Weight = maturity/adoption signal. USD = current OpenUSD alignment.</div>
+                                        <div class="stats-grid" id="statsGrid"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Details Panel -->
+                        <div class="panel" id="detailsPanel">
+                            <div class="panel-header" onclick="togglePanel('detailsPanel')">
+                                <h3>
+                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                                    Domain Details
+                                </h3>
+                                <button class="toggle-btn" aria-label="Toggle details">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="chevron"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                            </div>
+                            <div class="panel-content">
+                                <div class="panel-body">
+                                    <div class="panel-body-inner" id="detailsBody">
+                                        <strong>Click a domain circle</strong><br>
+                                        Select a circle to see the closest governing body, standards organization, or official ecosystem links.
+                                        Not every domain has a single authority.
+                                        <div class="pill" style="margin-top: 12px;">No umbrella world-model consortium found</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Map Reading Guide Panel -->
+                        <div class="panel collapsed" id="legendPanel">
+                            <div class="panel-header" onclick="togglePanel('legendPanel')">
+                                <h3>
+                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: #10b981;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                                    How to read the map
+                                </h3>
+                                <button class="toggle-btn" aria-label="Toggle map guide">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="chevron"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                            </div>
+                            <div class="panel-content">
+                                <div class="panel-body">
+                                    <div class="panel-body-inner">
+                                        Large circles represent estimated ecosystem weight, not verified user counts. The USD number is not
+                                        market share; it is a heuristic bridge score showing how directly that domain uses or could use
+                                        OpenUSD-style structured 3D worlds. Overlap means there is a real workflow/research bridge. Non-overlap
+                                        may indicate a white-space opportunity.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="chart">
+                        <div class="toolbar" aria-label="Zoom controls">
+                            <button id="zoomIn" class="btn btn-ghost">Zoom +</button>
+                            <button id="zoomOut" class="btn btn-ghost">Zoom -</button>
+                            <button id="resetZoom" class="btn btn-ghost">Reset</button>
+                        </div>
+                    </div>
+                    <div class="tooltip" id="tooltip"></div>
+                </div>
+            </section>
+
             <!-- Contact -->
             <section class="section" id="contact">
                 <div class="section-kicker">Contact</div>
@@ -609,12 +1189,566 @@
                 <div>
                     Contact: <strong>Joe Micallef</strong> · <a href="tel:+13109851517">310-985-1517</a>
                 </div>
-            </div>
-        </footer>
     </div>
 
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
+
+        const container = document.getElementById("chart");
+
+        const domains = [
+            {
+                id: "Entertainment CG",
+                score: 95,
+                usd: 92,
+                x: -250,
+                y: 105,
+                r: 174,
+                color: "#14b8a6",
+                subtitle: "assets · animation · lighting",
+                bullets: [
+                    "Creates cinematic, game, VFX, previs, and virtual-production worlds.",
+                    "Provides mature craft knowledge: layout, lighting, cameras, assets, animation, materials, and style.",
+                    "Becomes useful to world models when scenes are structured, labeled, varied, and simulation-ready.",
+                    "Strong bridge into synthetic data because artists can create rare edge cases and controlled visual variation."
+                ],
+                governance: "No single governing body. The closest hubs are ACM SIGGRAPH for the research/professional community, ASWF for open-source production tools, and Khronos for real-time graphics standards.",
+                links: [
+                    { label: "ACM SIGGRAPH", url: "https://www.siggraph.org/" },
+                    { label: "Academy Software Foundation", url: "https://www.aswf.io/" },
+                    { label: "Khronos Group", url: "https://www.khronos.org/" }
+                ],
+                note: "High overlap with USD because film, VFX, animation, games, and virtual production are the original strength of USD-style scene interchange."
+            },
+            {
+                id: "OpenUSD / USD",
+                score: 92,
+                usd: 100,
+                x: -58,
+                y: 20,
+                r: 168,
+                color: "#f97316",
+                subtitle: "structured scene graph",
+                bullets: [
+                    "Acts as an interchange layer for complex 3D worlds rather than a world model by itself.",
+                    "Can carry hierarchy, variants, references, cameras, materials, animation, and scene composition.",
+                    "Strong overlap with CG, simulation platforms, and emerging digital-twin workflows.",
+                    "Weak direct overlap with JEPA and benchmark worlds unless USD scenes are used to generate training/evaluation data."
+                ],
+                governance: "Main body: Alliance for OpenUSD (AOUSD), an open nonprofit organization focused on standardization, development, evolution, and growth of OpenUSD for interoperable 3D content.",
+                links: [
+                    { label: "OpenUSD official website", url: "https://openusd.org/" },
+                    { label: "OpenUSD GitHub — PixarAnimationStudios/OpenUSD", url: "https://github.com/PixarAnimationStudios/OpenUSD" },
+                    { label: "OpenUSD proposal forum", url: "https://github.com/PixarAnimationStudios/OpenUSD-proposals" },
+                    { label: "Alliance for OpenUSD", url: "https://aousd.org/" },
+                    { label: "AOUSD members", url: "https://aousd.org/members/" },
+                    { label: "NVIDIA OpenUSD developer page", url: "https://developer.nvidia.com/openusd" }
+                ],
+                note: "The bridge circle. It overlaps strongly with entertainment CG, simulation platforms, and digital twins, but only weakly with symbolic benchmarks or JEPA research by itself."
+            },
+            {
+                id: "Simulation Platforms",
+                score: 84,
+                usd: 78,
+                x: 120,
+                y: -46,
+                r: 154,
+                color: "#ec4899",
+                subtitle: "Omniverse · Isaac · Unreal",
+                bullets: [
+                    "Runs interactive environments where agents can observe, act, fail, and try again.",
+                    "Connects USD-style scene structure to physics, sensors, robotics, synthetic data, and digital twins.",
+                    "Provides the bridge from static 3D assets into dynamic worlds.",
+                    "Important for world model research because models need controllable environments for training and evaluation."
+                ],
+                governance: "No single governing body. This domain is platform-led, with NVIDIA Omniverse/Isaac Sim, game engines, robotics simulators, and open simulation research communities.",
+                links: [
+                    { label: "NVIDIA Omniverse", url: "https://www.nvidia.com/en-us/omniverse/" },
+                    { label: "NVIDIA Isaac Sim", url: "https://developer.nvidia.com/isaac/sim" },
+                    { label: "Habitat AI", url: "https://aihabitat.org/" },
+                    { label: "Habitat-Lab GitHub", url: "https://github.com/facebookresearch/habitat-lab" },
+                    { label: "Unreal Engine", url: "https://www.unrealengine.com/" },
+                    { label: "Unity Robotics Hub GitHub", url: "https://github.com/Unity-Technologies/Unity-Robotics-Hub" }
+                ],
+                note: "Strong USD overlap where platforms use scene graphs, simulation-ready assets, synthetic sensors, and composed 3D environments."
+            },
+            {
+                id: "Digital Twins",
+                score: 88,
+                usd: 72,
+                x: 292,
+                y: 112,
+                r: 162,
+                color: "#eab308",
+                subtitle: "real systems · telemetry",
+                bullets: [
+                    "Grounds simulated worlds in real machines, factories, vehicles, buildings, infrastructure, or supply chains.",
+                    "Uses geometry plus live or historical data: sensors, telemetry, failure states, maintenance records, and behavior.",
+                    "Overlaps with USD where 3D scene representation and simulation interoperability matter.",
+                    "Does not always use USD; many digital twins use CAD, BIM, GIS, IoT platforms, or custom industrial systems."
+                ],
+                governance: "Main body: Digital Twin Consortium, which promotes awareness, adoption, interoperability, development, reference architecture, testbeds, and standards requirements for digital twins.",
+                links: [
+                    { label: "Digital Twin Consortium", url: "https://www.digitaltwinconsortium.org/" },
+                    { label: "Definition of a Digital Twin", url: "https://www.digitaltwinconsortium.org/initiatives/the-definition-of-a-digital-twin/" },
+                    { label: "DTC member search", url: "https://www.digitaltwinconsortium.org/dtcmembersearch/" }
+                ],
+                note: "Strong but not total USD overlap. Some digital twins use OpenUSD/Omniverse-style stacks, while many industrial twins use CAD, IoT, BIM, GIS, custom data platforms, or vendor-specific systems."
+            },
+            {
+                id: "World Generation / Marble",
+                score: 68,
+                usd: 35,
+                x: -74,
+                y: 270,
+                r: 132,
+                color: "#a855f7",
+                subtitle: "generated 3D worlds",
+                bullets: [
+                    "Creates explorable 3D spaces from prompts, images, video, or rough spatial inputs.",
+                    "Overlaps with Entertainment CG because it uses the language of layout, lighting, camera, style, and worldbuilding.",
+                    "Only partially overlaps with USD today; exportable structured scenes are the future bridge.",
+                    "Could become a rapid way to create training environments for world models and agents."
+                ],
+                governance: "No standards body yet. The closest official domain reference is World Labs/Marble itself, plus adjacent 3D interchange standards if generated worlds become exportable scenes.",
+                links: [
+                    { label: "World Labs", url: "https://www.worldlabs.ai/" },
+                    { label: "Marble by World Labs", url: "https://www.worldlabs.ai/marble" },
+                    { label: "World Labs documentation", url: "https://docs.worldlabs.ai/" },
+                    { label: "World Labs blog", url: "https://www.worldlabs.ai/blog" }
+                ],
+                note: "Emerging overlap. Generated worlds may export or become USD-like scenes, but this is not yet a mature standardized bridge."
+            },
+            {
+                id: "World Model AI / JEPA",
+                score: 82,
+                usd: 22,
+                x: -20,
+                y: -252,
+                r: 150,
+                color: "#3b82f6",
+                subtitle: "latent prediction",
+                bullets: [
+                    "Learns predictive representations of how the world changes over time.",
+                    "JEPA-style systems do not need USD directly; they can learn from images, video, or observations.",
+                    "Overlaps with simulation when the simulation generates the experience data used for training or evaluation.",
+                    "Future bridge: USD/digital-twin worlds could generate structured video, depth, segmentation, and action data for world models."
+                ],
+                governance: "No dedicated world-model consortium yet. The nearest umbrella organizations are broader AI measurement/safety/benchmark groups, plus individual labs such as Meta, DeepMind, NVIDIA, and World Labs.",
+                links: [
+                    { label: "Meta V-JEPA research page", url: "https://ai.meta.com/research/vjepa/" },
+                    { label: "V-JEPA GitHub — facebookresearch/jepa", url: "https://github.com/facebookresearch/jepa" },
+                    { label: "I-JEPA GitHub — facebookresearch/ijepa", url: "https://github.com/facebookresearch/ijepa" },
+                    { label: "V-JEPA 2 GitHub — facebookresearch/vjepa2", url: "https://github.com/facebookresearch/vjepa2" },
+                    { label: "JEPA World Models GitHub — facebookresearch/jepa-wms", url: "https://github.com/facebookresearch/jepa-wms" },
+                    { label: "NIST AI Consortium", url: "https://www.nist.gov/artificial-intelligence/nist-ai-consortium" },
+                    { label: "MLCommons", url: "https://mlcommons.org/" },
+                    { label: "NVIDIA glossary: world models", url: "https://www.nvidia.com/en-us/glossary/world-models/" }
+                ],
+                note: "Mostly outside USD today. JEPA-style models learn predictive representations from images/video; they do not inherently require USD, though USD scenes could generate training data in the future."
+            },
+            {
+                id: "Benchmark Worlds",
+                score: 58,
+                usd: 10,
+                x: -360,
+                y: -180,
+                r: 112,
+                color: "#22c55e",
+                subtitle: "DoorKey · Crafter",
+                bullets: [
+                    "Benchmark worlds are controlled testbeds for agents and world-model ideas.",
+                    "DoorKey/MiniGrid tests simple symbolic logic: key, door, goal, memory, and sparse rewards.",
+                    "Crafter/Craftax tests richer open-ended survival behavior: resources, tools, health, danger, and long-horizon planning.",
+                    "Mostly outside USD because these are research environments, not production 3D scene graphs."
+                ],
+                governance: "No one umbrella body. MiniGrid is maintained in the Farama ecosystem; Crafter/Craftax are benchmark projects from research communities rather than standards organizations.",
+                links: [
+                    { label: "Farama Foundation", url: "https://farama.org/" },
+                    { label: "MiniGrid documentation", url: "https://minigrid.farama.org/" },
+                    { label: "MiniGrid GitHub — Farama-Foundation/Minigrid", url: "https://github.com/Farama-Foundation/Minigrid" },
+                    { label: "DoorKey environment docs", url: "https://minigrid.farama.org/environments/minigrid/DoorKeyEnv/" },
+                    { label: "Crafter benchmark website", url: "https://danijar.com/project/crafter/" },
+                    { label: "Crafter GitHub — danijar/crafter", url: "https://github.com/danijar/crafter" },
+                    { label: "Craftax GitHub — MichaelTMatthews/Craftax", url: "https://github.com/MichaelTMatthews/Craftax" },
+                    { label: "DreamerV3 GitHub — danijar/dreamerv3", url: "https://github.com/danijar/dreamerv3" }
+                ],
+                note: "Mostly outside USD. DoorKey/MiniGrid and Crafter/Craftax are controlled agent test environments, not USD-based production scenes."
+            }
+        ];
+
+        const overlaps = [
+            {
+                a: "Entertainment CG",
+                b: "OpenUSD / USD",
+                score: 96,
+                x: -155,
+                y: 70,
+                title: "CG → USD",
+                sub: "very strong overlap",
+                meaning: "This overlap means production-quality CG worlds can become structured, reusable, machine-readable scene graphs. It is where artists, modelers, layout artists, lighters, and technical directors connect to OpenUSD pipelines."
+            },
+            {
+                a: "OpenUSD / USD",
+                b: "Simulation Platforms",
+                score: 90,
+                x: 35,
+                y: -10,
+                title: "USD → Simulation",
+                sub: "structured worlds",
+                meaning: "This overlap means a scene is no longer just visual. It can become runnable: physics, sensors, cameras, object hierarchy, materials, and agent-accessible environments."
+            },
+            {
+                a: "Simulation Platforms",
+                b: "Digital Twins",
+                score: 92,
+                x: 210,
+                y: 58,
+                title: "Simulation → Twins",
+                sub: "physical systems",
+                meaning: "This overlap means simulated scenes are tied to real-world assets, telemetry, sensor behavior, maintenance events, and physical-system states."
+            },
+            {
+                a: "OpenUSD / USD",
+                b: "Digital Twins",
+                score: 72,
+                x: 145,
+                y: 138,
+                title: "USD → Twins",
+                sub: "strong, not universal",
+                meaning: "This overlap means OpenUSD can help digital twins become interoperable 3D worlds. It is strong in Omniverse-like workflows, but not universal because many twins still use CAD, BIM, GIS, IoT, or vendor systems."
+            },
+            {
+                a: "World Model AI / JEPA",
+                b: "Simulation Platforms",
+                score: 66,
+                x: 58,
+                y: -150,
+                title: "AI ↔ Simulation",
+                sub: "training/evaluation",
+                meaning: "This overlap means simulations can create the observation/action sequences that world models need to learn prediction, causality, planning, and physical reasoning."
+            },
+            {
+                a: "World Model AI / JEPA",
+                b: "OpenUSD / USD",
+                score: 22,
+                x: -37,
+                y: -108,
+                title: "weak direct USD link",
+                sub: "future bridge",
+                meaning: "This weak overlap means JEPA-style world models do not inherently depend on USD today. The future bridge is using USD worlds to generate structured multimodal training data."
+            },
+            {
+                a: "World Generation / Marble",
+                b: "Entertainment CG",
+                score: 76,
+                x: -170,
+                y: 230,
+                title: "generated worlds",
+                sub: "borrow CG language",
+                meaning: "This overlap means prompt/image/video-to-world tools inherit the concepts of entertainment CG: composition, scale, style, camera language, materials, lighting, and atmosphere."
+            },
+            {
+                a: "World Generation / Marble",
+                b: "OpenUSD / USD",
+                score: 35,
+                x: -70,
+                y: 172,
+                title: "possible export layer",
+                sub: "emerging",
+                meaning: "This overlap is still emerging. It becomes strong only when generated worlds can export clean, structured, editable, simulation-ready scenes."
+            },
+            {
+                a: "Benchmark Worlds",
+                b: "World Model AI / JEPA",
+                score: 62,
+                x: -235,
+                y: -206,
+                title: "benchmarks test agents",
+                sub: "DoorKey → Crafter",
+                meaning: "This overlap means benchmark worlds test whether an agent can learn rules, plan, remember, survive, explore, and act. DoorKey is simple symbolic logic; Crafter is open-ended survival."
+            },
+            {
+                a: "Benchmark Worlds",
+                b: "OpenUSD / USD",
+                score: 10,
+                x: -225,
+                y: -70,
+                title: "little/no USD",
+                sub: "symbolic + 2D worlds",
+                meaning: "This weak/non-overlap means DoorKey, MiniGrid, Crafter, and Craftax generally do not use USD. They are benchmark environments, not interoperable production scene graphs."
+            }
+        ];
+
+        // Centers coordinates dynamically at (0, 0) and uses standard viewBox aspect ratio fitting
+        const svg = d3.select("#chart").append("svg")
+            .attr("viewBox", "-500 -430 980 860");
+            
+        const defs = svg.append("defs");
+        const graphLayer = svg.append("g").attr("class", "graph-layer");
+
+        const zoom = d3.zoom()
+            .scaleExtent([0.45, 3.2])
+            .on("zoom", event => {
+                graphLayer.attr("transform", event.transform);
+            });
+
+        svg.call(zoom);
+
+        d3.select("#zoomIn").on("click", () => svg.transition().duration(260).call(zoom.scaleBy, 1.28));
+        d3.select("#zoomOut").on("click", () => svg.transition().duration(260).call(zoom.scaleBy, 0.78));
+        d3.select("#resetZoom").on("click", () => svg.transition().duration(320).call(zoom.transform, d3.zoomIdentity));
+
+        domains.forEach((d, i) => {
+            const grad = defs.append("radialGradient")
+                .attr("id", `grad-${i}`)
+                .attr("cx", "50%")
+                .attr("cy", "45%")
+                .attr("r", "70%");
+            grad.append("stop").attr("offset", "0%").attr("stop-color", d.color).attr("stop-opacity", 0.68);
+            grad.append("stop").attr("offset", "100%").attr("stop-color", d.color).attr("stop-opacity", 0.22);
+        });
+
+        const weak = overlaps.filter(d => d.score < 40);
+        graphLayer.selectAll("line.connector")
+            .data(weak)
+            .join("line")
+            .attr("class", "connector")
+            .attr("x1", d => find(d.a).x)
+            .attr("y1", d => find(d.a).y)
+            .attr("x2", d => find(d.b).x)
+            .attr("y2", d => find(d.b).y)
+            .attr("stroke-width", d => Math.max(1, d.score / 12))
+            .attr("opacity", 0.55);
+
+        const circles = graphLayer.selectAll("circle.domain-circle")
+            .data(domains)
+            .join("circle")
+            .attr("class", "domain-circle")
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .attr("r", d => d.r)
+            .attr("fill", (d, i) => `url(#grad-${i})`)
+            .attr("stroke", d => d.color)
+            .attr("stroke-opacity", 0.94)
+            .attr("stroke-width", 3)
+            .attr("tabindex", 0)
+            .attr("role", "button")
+            .attr("aria-label", d => `${d.id}. Click for governing organizations and links.`);
+
+        const labelGroups = graphLayer.selectAll("g.domainText")
+            .data(domains)
+            .join("g")
+            .attr("transform", d => `translate(${d.x}, ${d.y})`);
+
+        labelGroups.append("text")
+            .attr("class", "domain-label")
+            .attr("id", d => `label-${d.id.replace(/[^a-zA-Z0-9]/g, "-")}`)
+            .attr("y", -8)
+            .text(d => shortLabel(d.id));
+        labelGroups.append("text").attr("class", "domain-score").attr("y", 16).text(d => `Weight ${d.score} · USD ${d.usd}`);
+
+        const strongLabels = overlaps.filter(d => d.score >= 40);
+        const og = graphLayer.selectAll("g.overlapText")
+            .data(strongLabels)
+            .join("g")
+            .attr("transform", d => `translate(${d.x}, ${d.y})`);
+
+        og.append("circle")
+            .attr("class", "overlap-hotspot")
+            .attr("r", d => 42 + d.score * 0.22)
+            .attr("tabindex", 0)
+            .attr("role", "button")
+            .attr("aria-label", d => `${d.title}. Click for overlap meaning.`)
+            .on("mouseenter", (event, d) => {
+                const labelNode = document.getElementById(`overlap-label-${d.title.replace(/[^a-zA-Z0-9]/g, "-")}`);
+                if (labelNode) {
+                    const rect = labelNode.getBoundingClientRect();
+                    const containerRect = document.getElementById("viewer-container").getBoundingClientRect();
+                    const leftVal = rect.left - containerRect.left + rect.width / 2;
+                    const topVal = rect.bottom - containerRect.top + 8;
+                    const sourceColor = find(d.a)?.color || "#1e293b";
+                    const targetColor = find(d.b)?.color || sourceColor;
+
+                    tooltip
+                        .style("opacity", 1)
+                        .style("left", `${leftVal}px`)
+                        .style("top", `${topVal}px`)
+                        .style("background", `linear-gradient(135deg, ${hexToRgba(sourceColor, 0.4)}, ${hexToRgba(targetColor, 0.4)})`)
+                        .style("border-color", "rgba(0,0,0,0.3)")
+                        .html(`
+                            <button class="tooltip-close" onclick="document.getElementById('tooltip').style.opacity = 0; event.stopPropagation();">&times;</button>
+                            <strong>${d.title}</strong>
+                            <div class="meta">Overlap score: ${d.score}/100</div>
+                            <div>${d.meaning}</div>
+                            <div class="pill">Click to pin overlap details</div>
+                        `);
+                }
+            })
+            .on("click", (event, d) => showOverlapDetails(d))
+            .on("keydown", (event, d) => {
+                if (event.key === "Enter" || event.key === " ") showOverlapDetails(d);
+            });
+
+        og.append("text")
+            .attr("class", "overlap-label")
+            .attr("id", d => `overlap-label-${d.title.replace(/[^a-zA-Z0-9]/g, "-")}`)
+            .attr("y", -8)
+            .text(d => d.title);
+        og.append("text").attr("class", "overlap-sub").attr("y", 10).text(d => `overlap ${d.score}`);
+
+        function togglePanel(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.toggle("collapsed");
+            }
+        }
+
+        const tooltip = d3.select("#tooltip");
+        tooltip.on("click", (event) => {
+            event.stopPropagation();
+        });
+        const details = d3.select("#detailsBody");
+
+        circles
+            .on("mouseenter", (event, d) => {
+                const labelNode = document.getElementById(`label-${d.id.replace(/[^a-zA-Z0-9]/g, "-")}`);
+                if (labelNode) {
+                    const rect = labelNode.getBoundingClientRect();
+                    const containerRect = document.getElementById("viewer-container").getBoundingClientRect();
+                    const leftVal = rect.left - containerRect.left + rect.width / 2;
+                    const topVal = rect.bottom - containerRect.top + 8;
+
+                    tooltip
+                        .style("opacity", 1)
+                        .style("left", `${leftVal}px`)
+                        .style("top", `${topVal}px`)
+                        .style("background", hexToRgba(d.color, 0.4))
+                        .style("border-color", "rgba(0,0,0,0.3)")
+                        .html(`
+                            <button class="tooltip-close" onclick="document.getElementById('tooltip').style.opacity = 0; event.stopPropagation();">&times;</button>
+                            <strong>${d.id}</strong>
+                            <div class="meta">Estimated Weight: ${d.score}/100 · Estimated USD Alignment: ${d.usd}/100</div>
+                            <div>${d.note}</div>
+                            <ul>${d.bullets.map(item => `<li>${item}</li>`).join("")}</ul>
+                            <div class="pill">Click for official links</div>
+                        `);
+                }
+            })
+            .on("click", (event, d) => showDetails(d))
+            .on("keydown", (event, d) => {
+                if (event.key === "Enter" || event.key === " ") showDetails(d);
+            });
+
+        function initializeDetailsList() {
+            const listHtml = [];
+            
+            // 1. Add all domains
+            domains.forEach(d => {
+                const linksHtml = d.links.map(link => `<a href="${link.url}" target="_blank" rel="noopener noreferrer">${link.label} ↗</a>`).join("");
+                listHtml.push(`
+                    <div class="domain-detail-card" id="detail-card-${d.id.replace(/[^a-zA-Z0-9]/g, "-")}" style="border-left: 4px solid ${d.color} !important;">
+                        <strong style="font-size: 13px; margin-bottom: 8px; color: ${d.color}; display: block;">${d.id}</strong>
+                        <div style="margin-bottom: 12px; font-size: 10.5px; color: var(--text-muted);"><span class="swatch" style="background:${d.color}"></span>Estimated Weight: ${d.score}/100 · Estimated USD Alignment: ${d.usd}/100</div>
+                        <p style="margin-bottom: 10px; font-size: 11px; line-height: 1.5; color: #e2e8f0;">${d.note}</p>
+                        <ul style="margin: 0 0 10px 0; padding-left: 18px; color: var(--text-muted); font-size: 11px; line-height: 1.5;">${d.bullets.map(item => `<li style="margin-bottom: 4px;">${item}</li>`).join("")}</ul>
+                        <p style="margin-bottom: 10px; font-size: 11px; color: var(--text-muted); line-height: 1.5;">${d.governance}</p>
+                        <div class="link-list">${linksHtml}</div>
+                    </div>
+                `);
+            });
+            
+            // 2. Add all overlaps
+            overlaps.forEach(d => {
+                const sourceColor = find(d.a)?.color || "#1e293b";
+                const targetColor = find(d.b)?.color || sourceColor;
+                listHtml.push(`
+                    <div class="domain-detail-card" id="overlap-card-${d.title.replace(/[^a-zA-Z0-9]/g, "-")}" style="border-left: 4px solid ${sourceColor} !important;">
+                        <strong style="font-size: 13px; margin-bottom: 8px; color: ${sourceColor}; display: block;">${d.title}</strong>
+                        <div style="margin-bottom: 12px; font-size: 10.5px; color: var(--text-muted);">Overlap score: ${d.score}/100</div>
+                        <p style="margin-bottom: 10px; font-size: 11px; line-height: 1.5; color: var(--text-muted);">${d.meaning}</p>
+                        <div class="pill" style="border-color:${sourceColor};color:${sourceColor};">${d.a} ↔ ${d.b}</div>
+                    </div>
+                `);
+            });
+            
+            details.html(listHtml.join(""));
+        }
+
+        initializeDetailsList();
+
+        function showDetails(d) {
+            // Remove active-highlight from all cards
+            document.querySelectorAll('.domain-detail-card').forEach(el => {
+                el.classList.remove('active-highlight');
+                el.style.boxShadow = '';
+            });
+
+            const cardId = `detail-card-${d.id.replace(/[^a-zA-Z0-9]/g, "-")}`;
+            const card = document.getElementById(cardId);
+            if (card) {
+                card.classList.add('active-highlight');
+                card.style.boxShadow = `0 0 16px ${hexToRgba(d.color, 0.25)}`;
+                
+                // Smooth scroll inside detailsBody
+                const container = document.getElementById("detailsBody");
+                const topPos = card.offsetTop - container.offsetTop;
+                container.scrollTo({ top: topPos, behavior: 'smooth' });
+            }
+        }
+
+        function showOverlapDetails(d) {
+            // Remove active-highlight from all cards
+            document.querySelectorAll('.domain-detail-card').forEach(el => {
+                el.classList.remove('active-highlight');
+                el.style.boxShadow = '';
+            });
+
+            const cardId = `overlap-card-${d.title.replace(/[^a-zA-Z0-9]/g, "-")}`;
+            const card = document.getElementById(cardId);
+            if (card) {
+                const sourceColor = find(d.a)?.color || "#1e293b";
+                card.classList.add('active-highlight');
+                card.style.boxShadow = `0 0 16px ${hexToRgba(sourceColor, 0.25)}`;
+                
+                // Smooth scroll inside detailsBody
+                const container = document.getElementById("detailsBody");
+                const topPos = card.offsetTop - container.offsetTop;
+                container.scrollTo({ top: topPos, behavior: 'smooth' });
+            }
+        }
+
+        function shortLabel(id) {
+            return id
+                .replace("World Model AI / JEPA", "World Model AI")
+                .replace("World Generation / Marble", "World Generation")
+                .replace("OpenUSD / USD", "OpenUSD");
+        }
+
+        function hexToRgba(hex, alpha = 0.4) {
+            const clean = hex.replace("#", "");
+            const bigint = parseInt(clean, 16);
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        const statsGrid = d3.select("#statsGrid");
+        domains
+            .slice()
+            .sort((a, b) => b.score - a.score)
+            .forEach(d => {
+                statsGrid.append("div").html(`<span class="swatch" style="background:${d.color}"></span>${d.id}`);
+                statsGrid.append("div").text(`Weight ${d.score}`);
+                statsGrid.append("div").text(`USD ${d.usd}`);
+            });
+
+        showDetails(domains.find(d => d.id === "OpenUSD / USD"));
+
+        function find(id) {
+            return domains.find(d => d.id === id);
+        }
     </script>
 </body>
 
