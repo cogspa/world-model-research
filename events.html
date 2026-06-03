@@ -141,131 +141,283 @@
 
         main {
             flex: 1;
+            padding: 40px 20px 80px;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
         }
 
-        .coming-soon-card {
-            max-width: 500px;
+        .events-container {
+            max-width: var(--max-width);
             width: 100%;
+        }
+
+        .events-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .events-header .badge {
+            margin-bottom: 12px;
+        }
+
+        .events-header .subtitle {
+            font-size: 15px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 12px auto 0;
+            line-height: 1.6;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 28px;
+            width: 100%;
+        }
+
+        .event-card {
+            display: flex;
+            gap: 28px;
             background: rgba(7, 8, 28, 0.4);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-lg);
-            padding: 40px;
-            text-align: center;
+            padding: 32px;
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            box-shadow: var(--shadow-soft);
+            box-shadow: var(--shadow-subtle);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
         }
 
-        .coming-soon-card::before {
+        .event-card::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(124, 92, 255, 0.08) 0%, transparent 60%);
-            pointer-events: none;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--event-color, var(--accent));
+            box-shadow: 0 0 12px var(--event-color, var(--accent));
         }
 
-        .icon-container {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: var(--accent-soft);
-            border: 1px solid rgba(124, 92, 255, 0.25);
+        .event-card::after {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(var(--event-color-rgb, 124, 92, 255), 0.06) 0%, transparent 70%);
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: var(--shadow-soft), 0 0 24px rgba(var(--event-color-rgb, 124, 92, 255), 0.1);
+        }
+
+        .event-date-block {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 24px;
-            color: var(--accent);
-            position: relative;
-            animation: pulse-ring 2s infinite ease-in-out;
+            width: 96px;
+            height: 96px;
+            min-width: 96px;
+            border-radius: var(--radius-md);
+            background: rgba(var(--event-color-rgb, 124, 92, 255), 0.08);
+            border: 1px solid rgba(var(--event-color-rgb, 124, 92, 255), 0.18);
+            text-align: center;
+            padding: 8px;
+            user-select: none;
         }
 
-        @keyframes pulse-ring {
-            0% {
-                box-shadow: 0 0 0 0 rgba(124, 92, 255, 0.4);
-            }
-
-            70% {
-                box-shadow: 0 0 0 12px rgba(124, 92, 255, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(124, 92, 255, 0);
-            }
-        }
-
-        h2 {
-            font-size: clamp(24px, 3vw, 32px);
-            margin: 0 0 12px;
+        .event-date-block .month {
+            font-size: 11px;
             font-weight: 700;
-            letter-spacing: -0.02em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--event-color, var(--accent));
             line-height: 1.2;
         }
 
-        .title-gradient {
-            background: linear-gradient(135deg, var(--text-main) 30%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .event-date-block .day {
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-top: 6px;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
         }
 
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 99px;
-            background: var(--accent-soft);
-            color: var(--accent);
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            border: 1px solid rgba(124, 92, 255, 0.18);
-            margin-bottom: 20px;
+        .event-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        p {
-            font-size: 14px;
+        .event-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .event-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .event-meta-item svg {
+            color: var(--event-color, var(--accent));
+            opacity: 0.85;
+        }
+
+        .event-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+            color: var(--text-main);
+            transition: color 0.2s ease;
+        }
+
+        .event-card:hover .event-title {
+            color: var(--event-color, var(--accent));
+        }
+
+        .event-desc {
+            font-size: 13.5px;
             line-height: 1.6;
             color: var(--text-muted);
-            margin: 0 0 32px;
+            margin: 0 0 4px;
         }
 
-        .btn {
+        .event-footer {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            padding-top: 16px;
+        }
+
+        .event-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .event-tag {
+            font-size: 10px;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 99px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-muted);
+            letter-spacing: 0.02em;
+        }
+
+        .btn-event-primary {
+            background: var(--event-color, var(--accent));
+            color: #050616;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px 18px;
+            border-radius: 99px;
+            transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 10px 24px;
-            border-radius: 99px;
-            font-size: 13px;
-            font-weight: 500;
-            letter-spacing: 0.02em;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
             border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(var(--event-color-rgb, 124, 92, 255), 0.2);
+            text-decoration: none;
         }
 
-        .btn-primary {
-            background: var(--accent);
-            color: #050616;
-            box-shadow: 0 4px 20px rgba(124, 92, 255, 0.3);
+        .btn-event-primary:hover {
+            transform: translateY(-1.5px);
+            box-shadow: 0 6px 18px rgba(var(--event-color-rgb, 124, 92, 255), 0.35);
+            filter: brightness(1.1);
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(124, 92, 255, 0.45);
-            background: #8b6fff;
-        }
-
-        .btn-primary:active {
+        .btn-event-primary:active {
             transform: translateY(0);
+        }
+
+        .btn-event-outline {
+            background: transparent;
+            color: var(--event-color, var(--accent));
+            border: 1px solid rgba(var(--event-color-rgb, 124, 92, 255), 0.4);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px 18px;
+            border-radius: 99px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-event-outline:hover {
+            border-color: var(--event-color, var(--accent));
+            background: rgba(var(--event-color-rgb, 124, 92, 255), 0.08);
+            transform: translateY(-1.5px);
+        }
+
+        .btn-event-outline:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .event-card {
+                flex-direction: column;
+                gap: 20px;
+                padding: 24px;
+            }
+
+            .event-card::before {
+                width: 100%;
+                height: 4px;
+            }
+
+            .event-date-block {
+                flex-direction: row;
+                width: 100%;
+                height: auto;
+                min-width: unset;
+                justify-content: flex-start;
+                gap: 12px;
+                padding: 10px 16px;
+                text-align: left;
+            }
+
+            .event-date-block .day {
+                margin-top: 0;
+                font-size: 18px;
+            }
+
+            .event-footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-event-primary, .btn-event-outline {
+                width: 100%;
+            }
         }
 
         footer {
@@ -334,20 +486,75 @@
         </header>
 
         <main>
-            <div class="coming-soon-card">
-                <div class="badge">Coming Soon</div>
-                <div class="icon-container">
-                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
+            <div class="events-container">
+                <div class="events-header">
+                    <div class="badge">Events Board</div>
+                    <h2><span class="title-gradient">Events & Workshops</span></h2>
+                    <p class="subtitle">Join hackathons, reading groups, and workshops at the intersection of world models, spatial AI, and synthetic environments.</p>
                 </div>
-                <h2><span class="title-gradient">Events & Workshops</span></h2>
-                <p>Register for upcoming workshops, developer roundtables, reading groups, and simulation demo sessions. Check back soon for events.</p>
-                <a href="index.html" class="btn btn-primary">Return to Hub</a>
+
+                <div class="events-grid">
+                    <!-- Event: Worlds in Action Hack -->
+                    <div class="event-card" style="--event-color: #ffb347; --event-color-rgb: 255, 179, 71;">
+                        <div class="event-date-block">
+                            <div class="month">JUL</div>
+                            <div class="day">18-19</div>
+                        </div>
+                        <div class="event-details">
+                            <div class="event-meta">
+                                <div class="event-meta-item">
+                                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    <span>Saturday 9:00 AM – Sunday 5:00 PM</span>
+                                </div>
+                                <div class="event-meta-item">
+                                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                    <span>Los Angeles, CA (Register to See Address)</span>
+                                </div>
+                            </div>
+                            <h3 class="event-title">Worlds in Action Hack [02-LA]: SIGGRAPH EDITION</h3>
+                            <p class="event-desc">Join developers, researchers, and creators in Los Angeles for a high-intensity weekend hackathon building the next generation of interactive 3D worlds, simulation environments, and spatial AI agents. Coinciding with SIGGRAPH, this edition focuses on OpenUSD workflows, physical AI, and generative world modeling.</p>
+                            <div class="event-footer">
+                                <div class="event-tags">
+                                    <span class="event-tag">Hackathon</span>
+                                    <span class="event-tag">OpenUSD</span>
+                                    <span class="event-tag">SIGGRAPH Edition</span>
+                                    <span class="event-tag">Spatial AI</span>
+                                </div>
+                                <a href="https://luma.com/u7pmhw92?utm-source=rahel" target="_blank" rel="noopener noreferrer" class="btn-event-primary">Register on Luma</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event: Weekly World Models Reading Group -->
+                    <div class="event-card" style="--event-color: #7c5cff; --event-color-rgb: 124, 92, 255;">
+                        <div class="event-date-block">
+                            <div class="month">WEEKLY</div>
+                            <div class="day">THU</div>
+                        </div>
+                        <div class="event-details">
+                            <div class="event-meta">
+                                <div class="event-meta-item">
+                                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    <span>5:00 PM – 6:30 PM PT</span>
+                                </div>
+                                <div class="event-meta-item">
+                                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                    <span>Virtual Session</span>
+                                </div>
+                            </div>
+                            <h3 class="event-title">Weekly World Models Reading Group</h3>
+                            <p class="event-desc">A recurring community roundtable dissecting the latest research papers in Joint-Embedding Predictive Architecture (JEPA), world model planning, and generative physical AI. Open to researchers, engineers, and curious minds.</p>
+                            <div class="event-footer">
+                                <div class="event-tags">
+                                    <span class="event-tag">Reading Group</span>
+                                    <span class="event-tag">JEPA Research</span>
+                                    <span class="event-tag">Community</span>
+                                </div>
+                                <a href="index.html#contact" class="btn-event-outline">Join / Request Invite</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
 
