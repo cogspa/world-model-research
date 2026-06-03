@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Research Papers – World Model Research</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        :root {
+            --bg: #050616;
+            --bg-alt: #07081c;
+            --accent: #7c5cff;
+            --accent-soft: rgba(124, 92, 255, 0.14);
+            --accent-strong: #ffb347;
+            --text-main: #f4f5ff;
+            --text-muted: #a3a6c7;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --max-width: 980px;
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --shadow-soft: 0 24px 80px rgba(0, 0, 0, 0.7);
+            --shadow-subtle: 0 16px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                "SF Pro Text", "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, #17192e 0, #050616 50%, #02010a 100%);
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        header {
+            padding: 18px 20px 10px;
+        }
+
+        .header-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-mark {
+            width: 32px;
+            height: auto;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text span:first-child {
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+
+        .logo-text span:last-child {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-link {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            transition: color 0.2s ease, text-shadow 0.2s ease;
+            position: relative;
+            padding: 4px 0;
+            text-decoration: none;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--text-main);
+            text-shadow: 0 0 8px rgba(244, 245, 255, 0.5);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+            box-shadow: 0 0 8px var(--accent);
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .wm-papers {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 24px 20px 48px;
+            width: 100%;
+        }
+
+        .wm-papers__header {
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 24px;
+            margin-bottom: 32px;
+        }
+
+        .wm-papers__eyebrow {
+            color: var(--accent-strong);
+            font-size: 11px;
+            letter-spacing: 0.18em;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin: 0 0 8px;
+            text-shadow: 0 0 10px rgba(255, 179, 71, 0.2);
+        }
+
+        .wm-papers h2 {
+            font-size: clamp(26px, 3.4vw, 36px);
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin: 0 0 12px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-main) 30%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .wm-papers__intro {
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* Filter controls */
+        .wm-papers__filters {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: rgba(7, 8, 28, 0.3);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 18px 24px;
+            margin-bottom: 32px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .filter-row-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .search-container input {
+            box-sizing: border-box;
+            width: 100%;
+            border: 1px solid var(--border-subtle);
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text-main);
+            padding: 10px 18px;
+            font: inherit;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .search-container input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 12px rgba(124, 92, 255, 0.25);
+        }
+
+        .sort-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .sort-select {
+            padding: 8px 28px 8px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 12px;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='rgba(163, 166, 199, 0.8)' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 6px center;
+            background-size: 1.1rem;
+        }
+
+        .chips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip-btn {
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-subtle);
+            border-radius: 99px;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chip-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .chip-btn.active {
+            background: var(--accent-soft);
+            color: var(--text-main);
+            border-color: var(--accent);
+            box-shadow: 0 0 12px rgba(124, 92, 255, 0.2);
+        }
+
+        /* Papers Grid */
+        .papers-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .paper-card {
+            background: rgba(7, 8, 28, 0.4);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-subtle);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .paper-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--tag-color, var(--accent));
+            box-shadow: 0 0 10px var(--tag-color, var(--accent));
+        }
+
+        .paper-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: var(--shadow-soft), 0 0 20px rgba(124, 92, 255, 0.1);
+        }
+
+        .paper-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .paper-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin: 0 0 6px;
+            line-height: 1.35;
+            color: var(--text-main);
+            letter-spacing: -0.01em;
+            transition: color 0.2s ease;
+        }
+
+        .paper-card:hover .paper-title {
+            color: var(--tag-color, var(--accent));
+        }
+
+        .paper-authors {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .paper-venue-year {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-strong);
+            margin-bottom: 2px;
+        }
+
+        .paper-desc {
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .paper-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            padding-top: 16px;
+            margin-top: auto;
+        }
+
+        .paper-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag-badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 99px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-muted);
+        }
+
+        .tag-badge.category {
+            background: rgba(var(--tag-color-rgb), 0.08);
+            border-color: rgba(var(--tag-color-rgb), 0.2);
+            color: var(--tag-color);
+        }
+
+        .paper-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            border: 1px solid var(--border-subtle);
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-muted);
+        }
+
+        .btn-action:hover {
+            color: var(--text-main);
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-action.primary {
+            background: var(--tag-color, var(--accent));
+            border-color: var(--tag-color, var(--accent));
+            color: #050616;
+            box-shadow: 0 4px 12px rgba(var(--tag-color-rgb), 0.18);
+        }
+
+        .btn-action.primary:hover {
+            box-shadow: 0 6px 16px rgba(var(--tag-color-rgb), 0.3);
+            filter: brightness(1.1);
+        }
+
+        .btn-action svg {
+            flex-shrink: 0;
+        }
+
+        .wm-papers__empty {
+            background: rgba(7, 8, 28, 0.3);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 13.5px;
+            text-align: center;
+        }
+
+        footer {
+            padding: 16px 20px 22px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .footer-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .wm-papers__filters {
+                padding: 16px;
+            }
+
+            .filter-row-top {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-container, .sort-container {
+                max-width: unset;
+                width: 100%;
+            }
+
+            .sort-select {
+                flex: 1;
+            }
+
+            .paper-header {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .paper-footer {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 16px;
+            }
+
+            .paper-actions {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .btn-action {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 680px) {
+            .header-inner {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+
+            .logo {
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .logo-text {
+                align-items: center;
+            }
+
+            .nav-menu {
+                gap: 16px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <header>
+            <div class="header-inner">
+                <div class="logo">
+                    <img src="images/WMR_logo_white@2x.png" alt="WMR Logo" class="logo-mark" />
+                    <div class="logo-text">
+                        <span>World Model Research</span>
+                        <span>World models, simulation & synthetic worlds</span>
+                    </div>
+                </div>
+                <nav class="nav-menu">
+                    <a href="index.html#about" class="nav-link">About</a>
+                    <a href="index.html#focus" class="nav-link">Focus</a>
+                    <a href="index.html#world-model-viewer" class="nav-link">Ecosystem Map</a>
+                    <a href="resources.html" class="nav-link">Resources</a>
+                    <a href="news.html" class="nav-link">News</a>
+                    <a href="papers.html" class="nav-link active">Papers</a>
+                    <a href="events.html" class="nav-link">Events</a>
+                    <a href="index.html#contact" class="nav-link">Contact</a>
+                </nav>
+            </div>
+        </header>
+
+        <main>
+            <section class="wm-papers" aria-labelledby="wm-papers-heading">
+                <header class="wm-papers__header">
+                    <div>
+                        <p class="wm-papers__eyebrow">Scientific Literature</p>
+                        <h2 id="wm-papers-heading">World Model Research Papers</h2>
+                        <p class="wm-papers__intro">
+                            An interactive library of pioneering papers tracking recurrent neural world models, latent imagination, diffusion environment simulators, and joint-embedding predictive architectures (JEPA).
+                        </p>
+                    </div>
+                </header>
+
+                <!-- Filters -->
+                <div class="wm-papers__filters">
+                    <div class="filter-row-top">
+                        <div class="search-container" role="search">
+                            <input id="search-input" placeholder="Search papers by title, author, abstract, or code..." />
+                        </div>
+                        <div class="sort-container">
+                            <span>Sort By:</span>
+                            <select id="sort-select" class="sort-select">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="alphabetical">Title A-Z</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="chips-container" id="category-chips">
+                        <button class="chip-btn active" data-category="all">All Topics</button>
+                        <button class="chip-btn" data-category="foundational">Foundational</button>
+                        <button class="chip-btn" data-category="imagination">Latent Imagination</button>
+                        <button class="chip-btn" data-category="diffusion">Diffusion Models</button>
+                        <button class="chip-btn" data-category="jepa">JEPA Architectures</button>
+                        <button class="chip-btn" data-category="transformer">Transformers</button>
+                    </div>
+                </div>
+
+                <!-- Papers Grid -->
+                <div class="papers-list" id="papers-list">
+                    <!-- Loaded dynamically via JavaScript -->
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="footer-inner">
+                <div>
+                    © <span id="year"></span> World Model Research — Where worlds are designed, and intelligence is
+                    formed.
+                </div>
+                <div>
+                    Contact: <strong>Joe Micallef</strong> · <a href="tel:+13109851517">310-985-1517</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        const papersData = [
+            {
+                title: "Recurrent World Models Facilitate Policy Evolution",
+                authors: "David Ha, Jürgen Schmidhuber",
+                year: 2018,
+                venue: "NeurIPS 2018",
+                desc: "The seminal paper establishing the modern world model paradigm. Demonstrates how a generative recurrent neural network can be trained to simulate environments (hallucinating futures in a latent space), allowing compact agent policies to be trained entirely inside this dream environment.",
+                category: "foundational",
+                categoryLabel: "Foundational",
+                color: "#14b8a6", // Teal
+                colorRgb: "20, 184, 166",
+                arxiv: "https://arxiv.org/abs/1803.10122",
+                github: "https://github.com/hardmaru/WorldModelsExperiments",
+                pwc: "https://paperswithcode.com/paper/recurrent-world-models-facilitate-policy"
+            },
+            {
+                title: "Dream to Control: Learning Behaviors by Latent Imagination",
+                authors: "Danijar Hafner, Timothy Lillicrap, Jimmy Ba, Mohammad Norouzi",
+                year: 2019,
+                venue: "ICLR 2020",
+                desc: "Introduces the Dreamer framework. It trains a latent dynamics model (RSSM) from pixel inputs and learns behaviors entirely by projecting future trajectories inside the model's latent imagination, achieving state-of-the-art sample efficiency in reinforcement learning.",
+                category: "imagination",
+                categoryLabel: "Latent Imagination",
+                color: "#a855f7", // Purple
+                colorRgb: "168, 85, 247",
+                arxiv: "https://arxiv.org/abs/1912.01603",
+                github: "https://github.com/danijar/dreamer",
+                pwc: "https://paperswithcode.com/paper/dream-to-control-learning-behaviors-by"
+            },
+            {
+                title: "Mastering Atari with Discrete World Models",
+                authors: "Danijar Hafner, Timothy Lillicrap, Mohammad Norouzi, Jimmy Ba",
+                year: 2020,
+                venue: "ICLR 2021",
+                desc: "Introduces DreamerV2. It is the first model-based RL agent to achieve human-level performance and surpass the model-free Rainbow agent on the competitive Atari 55 benchmark, utilizing discrete latent categorical variables to represent environment dynamics.",
+                category: "imagination",
+                categoryLabel: "Latent Imagination",
+                color: "#a855f7", // Purple
+                colorRgb: "168, 85, 247",
+                arxiv: "https://arxiv.org/abs/2010.02193",
+                github: "https://github.com/danijar/dreamerv2",
+                pwc: "https://paperswithcode.com/paper/mastering-atari-with-discrete-world-models"
+            },
+            {
+                title: "Mastering Diverse Domains through World Models",
+                authors: "Danijar Hafner, Jente Pas, Ian Fischer, Ruoqi Zhang, Ricky Loynd, Connor Lee, Bowman He, Hiroki Furuta",
+                year: 2023,
+                venue: "arXiv preprint",
+                desc: "Introduces DreamerV3. Demonstrates that model-based RL agents can master diverse 3D and 2D environments (Atari, Minecraft, DMC, DMLab) with completely fixed hyperparameters, showcasing robust scaling properties and model-based learning stability.",
+                category: "imagination",
+                categoryLabel: "Latent Imagination",
+                color: "#a855f7", // Purple
+                colorRgb: "168, 85, 247",
+                arxiv: "https://arxiv.org/abs/2301.04104",
+                github: "https://github.com/danijar/dreamerv3",
+                pwc: "https://paperswithcode.com/paper/mastering-diverse-domains-through-world"
+            },
+            {
+                title: "DayDreamer: World Models for Physical Robot Learning",
+                authors: "Philipp Wu, Alejandro Escontrela, Danijar Hafner, Pieter Abbeel, Kenjihara",
+                year: 2022,
+                venue: "CoRL 2022",
+                desc: "Applies Dreamer to physical robot hardware. Shows that mobile robots (e.g., Boston Dynamics Spot) and robotic manipulators can learn quadruped locomotion, grasping, and visual tracking directly in the physical world, training inside latent dreams in just a few hours.",
+                category: "transformer",
+                categoryLabel: "Robotics & Physical AI",
+                color: "#f97316", // Orange
+                colorRgb: "249, 115, 22",
+                arxiv: "https://arxiv.org/abs/2206.14176",
+                github: "https://github.com/danijar/daydreamer",
+                pwc: "https://paperswithcode.com/paper/daydreamer-world-models-for-physical-robot"
+            },
+            {
+                title: "DIAMOND: Diffusion As a Model Of eNvironment Dreams",
+                authors: "Eloise Bruce, Alex Denis, Yann LeCun, Nicolas Usunier",
+                year: 2024,
+                venue: "arXiv preprint",
+                desc: "Introduces DIAMOND. It presents a reinforcement learning agent trained entirely inside a diffusion-based world model. Demonstrates how conditional diffusion processes can generate high-fidelity environment simulations to surpass traditional autoregressive dynamics models.",
+                category: "diffusion",
+                categoryLabel: "Diffusion Models",
+                color: "#ec4899", // Pink
+                colorRgb: "236, 72, 153",
+                arxiv: "https://arxiv.org/abs/2405.12399",
+                github: "https://github.com/eloise-bruce/diamond",
+                pwc: "https://paperswithcode.com/paper/diffusion-as-a-model-of-environment-dreams"
+            },
+            {
+                title: "IRIS: Implicit Reinforcement without Interaction at Scale",
+                authors: "Vincent Micheli, Luana Ruoso, François Fleuret",
+                year: 2022,
+                venue: "NeurIPS 2022",
+                desc: "Introduces IRIS, an agent trained inside a generative world model that models environment sequences using an autoregressive Transformer. IRIS plans future behaviors using discrete token prediction, reaching outstanding scores on the Atari 100k benchmarks.",
+                category: "transformer",
+                categoryLabel: "Transformer Models",
+                color: "#eab308", // Yellow
+                colorRgb: "234, 179, 8",
+                arxiv: "https://arxiv.org/abs/2209.00588",
+                github: "https://github.com/vincent-micheli/IRIS",
+                pwc: "https://paperswithcode.com/paper/iris-implicit-reinforcement-without"
+            },
+            {
+                title: "Genie: Generative Interactive Environments",
+                authors: "Bruce et al. (Google Research)",
+                year: 2024,
+                venue: "arXiv preprint",
+                desc: "A foundational generative model trained on unlabeled 2D platformer gameplay videos. It generates fully interactive, controllable, and responsive simulated environments from static text or image prompts, implementing action-conditioned latent transitions.",
+                category: "diffusion",
+                categoryLabel: "Diffusion Models",
+                color: "#ec4899", // Pink
+                colorRgb: "236, 72, 153",
+                arxiv: "https://arxiv.org/abs/2402.15391",
+                github: "https://github.com/google-research/google-research",
+                pwc: "https://paperswithcode.com/paper/genie-generative-interactive-environments"
+            },
+            {
+                title: "Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture (I-JEPA)",
+                authors: "Mahmoud Assran, Mathilde Caron, Ishan Misra, Piotr Bojanowski, Armand Joulin, Nicolas Usunier, Michael Rabbat, Yann LeCun",
+                year: 2023,
+                venue: "CVPR 2023",
+                desc: "The foundational paper on Joint-Embedding Predictive Architectures (JEPA). It proposes a self-supervised visual representation model that predicts missing target patch representations in a latent coordinate space rather than reconstructing pixels, avoiding collapse and artifacts.",
+                category: "jepa",
+                categoryLabel: "JEPA Architectures",
+                color: "#3b82f6", // Blue
+                colorRgb: "59, 130, 246",
+                arxiv: "https://arxiv.org/abs/2301.08243",
+                github: "https://github.com/facebookresearch/ijepa",
+                pwc: "https://paperswithcode.com/paper/self-supervised-learning-from-images-with-a"
+            },
+            {
+                title: "Learning Image Representations with Joint-Embedding Predictive Architecture (V-JEPA)",
+                authors: "Mahmoud Assran, Mathilde Caron, Piotr Bojanowski, Nicolas Usunier, Michael Rabbat, Yann LeCun",
+                year: 2024,
+                venue: "arXiv preprint",
+                desc: "Extends Meta's Joint-Embedding Predictive Architecture (JEPA) to video sequences. Trains visual agents to perform temporal and spatial predictions in latent feature spaces, establishing representation vectors for motion, planning, and control.",
+                category: "jepa",
+                categoryLabel: "JEPA Architectures",
+                color: "#3b82f6", // Blue
+                colorRgb: "59, 130, 246",
+                arxiv: "https://arxiv.org/abs/2404.08481",
+                github: "https://github.com/facebookresearch/jepa",
+                pwc: "https://paperswithcode.com/paper/v-jepa-video-joint-embedding-predictive-architecture"
+            }
+        ];
+
+        let filterCategory = 'all';
+        let searchQuery = '';
+        let sortBy = 'newest';
+
+        function renderPapers() {
+            const listEl = document.getElementById('papers-list');
+            listEl.innerHTML = '';
+
+            const q = searchQuery.trim().toLowerCase();
+
+            // Filter
+            let filtered = papersData.filter(paper => {
+                const categoryMatch = filterCategory === 'all' || paper.category === filterCategory;
+                const searchMatch = !q || 
+                    paper.title.toLowerCase().includes(q) || 
+                    paper.authors.toLowerCase().includes(q) || 
+                    paper.desc.toLowerCase().includes(q) || 
+                    paper.venue.toLowerCase().includes(q);
+                return categoryMatch && searchMatch;
+            });
+
+            // Sort
+            if (sortBy === 'newest') {
+                filtered.sort((a, b) => b.year - a.year);
+            } else if (sortBy === 'oldest') {
+                filtered.sort((a, b) => a.year - b.year);
+            } else if (sortBy === 'alphabetical') {
+                filtered.sort((a, b) => a.title.localeCompare(b.title));
+            }
+
+            // Render
+            if (filtered.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'wm-papers__empty';
+                empty.textContent = 'No research papers match your search criteria.';
+                listEl.appendChild(empty);
+                return;
+            }
+
+            filtered.forEach(paper => {
+                const card = document.createElement('article');
+                card.className = 'paper-card';
+                card.style.setProperty('--tag-color', paper.color);
+                card.style.setProperty('--tag-color-rgb', paper.colorRgb);
+
+                card.innerHTML = `
+                    <div class="paper-header">
+                        <div>
+                            <div class="paper-venue-year">${escapeHtml(paper.venue)} · ${paper.year}</div>
+                            <h3 class="paper-title">${escapeHtml(paper.title)}</h3>
+                            <p class="paper-authors">By <strong>${escapeHtml(paper.authors)}</strong></p>
+                        </div>
+                    </div>
+                    <p class="paper-desc">${escapeHtml(paper.desc)}</p>
+                    <div class="paper-footer">
+                        <div class="paper-tags">
+                            <span class="tag-badge category">${escapeHtml(paper.categoryLabel)}</span>
+                            <span class="tag-badge">${paper.year}</span>
+                        </div>
+                        <div class="paper-actions">
+                            <a href="${paper.arxiv}" target="_blank" rel="noopener noreferrer" class="btn-action primary">
+                                <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                                Paper
+                            </a>
+                            <a href="${paper.github}" target="_blank" rel="noopener noreferrer" class="btn-action">
+                                <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                                Code
+                            </a>
+                            <a href="${paper.pwc}" target="_blank" rel="noopener noreferrer" class="btn-action">
+                                <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>
+                                PWC
+                            </a>
+                        </div>
+                    </div>
+                `;
+                listEl.appendChild(card);
+            });
+        }
+
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Search Handlers
+        document.getElementById('search-input').oninput = (e) => {
+            searchQuery = e.target.value;
+            renderPapers();
+        };
+
+        // Sort Handlers
+        document.getElementById('sort-select').onchange = (e) => {
+            sortBy = e.target.value;
+            renderPapers();
+        };
+
+        // Chips Handlers
+        document.getElementById('category-chips').onclick = (e) => {
+            if (e.target.classList.contains('chip-btn')) {
+                document.querySelectorAll('.chip-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                filterCategory = e.target.getAttribute('data-category');
+                renderPapers();
+            }
+        };
+
+        renderPapers();
+    </script>
+</body>
+
+</html>
