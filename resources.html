@@ -139,133 +139,199 @@
             transform-origin: left;
         }
 
-        main {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-        }
-
-        .coming-soon-card {
-            max-width: 500px;
+        /* Resources Directory CSS (Space Dark Styling) */
+        .wm-resources {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 24px 20px 48px;
             width: 100%;
-            background: rgba(7, 8, 28, 0.4);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: 40px;
-            text-align: center;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            box-shadow: var(--shadow-soft);
-            position: relative;
-            overflow: hidden;
         }
 
-        .coming-soon-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(124, 92, 255, 0.08) 0%, transparent 60%);
-            pointer-events: none;
+        .wm-resources__header {
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 24px;
+            margin-bottom: 32px;
         }
 
-        .icon-container {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: var(--accent-soft);
-            border: 1px solid rgba(124, 92, 255, 0.25);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 24px;
+        .wm-resources__eyebrow {
             color: var(--accent);
-            position: relative;
-            animation: pulse-ring 2s infinite ease-in-out;
+            font-size: 11px;
+            letter-spacing: 0.18em;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin: 0 0 8px;
+            text-shadow: 0 0 10px rgba(124, 92, 255, 0.3);
         }
 
-        @keyframes pulse-ring {
-            0% {
-                box-shadow: 0 0 0 0 rgba(124, 92, 255, 0.4);
-            }
-
-            70% {
-                box-shadow: 0 0 0 12px rgba(124, 92, 255, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(124, 92, 255, 0);
-            }
-        }
-
-        h2 {
-            font-size: clamp(24px, 3vw, 32px);
+        .wm-resources h2 {
+            font-size: clamp(26px, 3.4vw, 36px);
+            letter-spacing: -0.02em;
+            line-height: 1.1;
             margin: 0 0 12px;
             font-weight: 700;
-            letter-spacing: -0.02em;
-            line-height: 1.2;
-        }
-
-        .title-gradient {
             background: linear-gradient(135deg, var(--text-main) 30%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 99px;
-            background: var(--accent-soft);
-            color: var(--accent);
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            border: 1px solid rgba(124, 92, 255, 0.18);
-            margin-bottom: 20px;
-        }
-
-        p {
-            font-size: 14px;
-            line-height: 1.6;
+        .wm-resources__intro {
             color: var(--text-muted);
-            margin: 0 0 32px;
+            max-width: 650px;
+            margin: 0;
+            line-height: 1.6;
+            font-size: 14px;
         }
 
-        .btn {
+        .wm-resources__search-row {
+            margin-bottom: 32px;
+        }
+
+        .wm-resources__search {
+            position: relative;
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .wm-resources__search input {
+            box-sizing: border-box;
+            width: 100%;
+            border: 1px solid var(--border-subtle);
+            border-radius: 999px;
+            background: rgba(7, 8, 28, 0.6);
+            color: var(--text-main);
+            padding: 12px 20px;
+            font: inherit;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .wm-resources__search input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 12px rgba(124, 92, 255, 0.25);
+            background: rgba(7, 8, 28, 0.85);
+        }
+
+        .group-section {
+            margin-bottom: 40px;
+            background: rgba(7, 8, 28, 0.2);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .group-header {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+            padding-left: 14px;
+            position: relative;
+        }
+
+        .group-header::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: 4px;
+            width: 4px;
+            background: var(--group-color, var(--accent));
+            border-radius: 4px;
+            box-shadow: 0 0 8px var(--group-color, var(--accent));
+        }
+
+        .group-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0 0 4px;
+        }
+
+        .group-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 500;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .link-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .link-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .link-card h4 {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .link-card h4 a {
+            color: var(--text-main);
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            padding: 10px 24px;
-            border-radius: 99px;
+            gap: 6px;
+            transition: color 0.2s ease;
+        }
+
+        .link-card h4 a:hover {
+            color: var(--group-color, var(--accent));
+        }
+
+        .link-card h4 a svg {
+            opacity: 0.6;
+            transition: opacity 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .link-card h4 a:hover svg {
+            opacity: 1;
+        }
+
+        .link-card p {
+            margin: 0;
+            font-size: 11.5px;
+            line-height: 1.45;
+            color: var(--text-muted);
+        }
+
+        .wm-resources__empty {
+            background: rgba(7, 8, 28, 0.3);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 30px;
+            color: var(--text-muted);
             font-size: 13px;
-            font-weight: 500;
-            letter-spacing: 0.02em;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            border: none;
+            text-align: center;
         }
 
-        .btn-primary {
-            background: var(--accent);
-            color: #050616;
-            box-shadow: 0 4px 20px rgba(124, 92, 255, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(124, 92, 255, 0.45);
-            background: #8b6fff;
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
+        main {
+            flex: 1;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
         }
 
         footer {
@@ -283,6 +349,12 @@
             justify-content: space-between;
             gap: 10px;
             align-items: center;
+        }
+
+        @media (max-width: 900px) {
+            .links-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media (max-width: 680px) {
@@ -305,6 +377,14 @@
                 gap: 16px;
                 flex-wrap: wrap;
                 justify-content: center;
+            }
+
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .group-section {
+                padding: 16px;
             }
         }
     </style>
@@ -334,20 +414,27 @@
         </header>
 
         <main>
-            <div class="coming-soon-card">
-                <div class="badge">In Development</div>
-                <div class="icon-container">
-                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path
-                            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
-                        </path>
-                    </svg>
+            <section class="wm-resources" aria-labelledby="wm-resources-heading">
+                <header class="wm-resources__header">
+                    <div>
+                        <p class="wm-resources__eyebrow">Ecosystem Links</p>
+                        <h2 id="wm-resources-heading">World Builder Resources</h2>
+                        <p class="wm-resources__intro">
+                            A curated directory of frameworks, specs, tools, and research repositories extracted from our World Model Ecosystem Map.
+                        </p>
+                    </div>
+                </header>
+
+                <div class="wm-resources__search-row" role="search">
+                    <div class="wm-resources__search">
+                        <input id="search-input" placeholder="Search resources (e.g., Omniverse, JEPA, Farama)..." />
+                    </div>
                 </div>
-                <h2><span class="title-gradient">World Builder Resources</span></h2>
-                <p>We are compiling a comprehensive repository of tools, datasets, and guidelines for designing, authoring, and training world models. Check back soon for updates.</p>
-                <a href="index.html" class="btn btn-primary">Return to Hub</a>
-            </div>
+
+                <div class="wm-resources__grid" id="resources-grid">
+                    <!-- Dynamic sections loaded via JS -->
+                </div>
+            </section>
         </main>
 
         <footer>
@@ -362,8 +449,185 @@
             </div>
         </footer>
     </div>
+
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
+
+        const resourceGroups = [
+            {
+                id: "cg",
+                name: "Entertainment CG",
+                color: "#14b8a6",
+                subtitle: "Assets, Animation & Rendering",
+                links: [
+                    { label: "ACM SIGGRAPH", url: "https://www.siggraph.org/", desc: "The premier international community for computer graphics and interactive techniques." },
+                    { label: "Academy Software Foundation", url: "https://www.aswf.io/", desc: "Open-source software foundation for the motion picture and media industries." },
+                    { label: "Khronos Group", url: "https://www.khronos.org/", desc: "An open consortium creating royalty-free interoperability standards for 3D graphics, VR, and AR." }
+                ]
+            },
+            {
+                id: "usd",
+                name: "OpenUSD / USD",
+                color: "#f97316",
+                subtitle: "Structured Scene Graphs",
+                links: [
+                    { label: "OpenUSD Official Website", url: "https://openusd.org/", desc: "Home of Pixar's Universal Scene Description for open-source 3D scene composition." },
+                    { label: "OpenUSD GitHub Repository", url: "https://github.com/PixarAnimationStudios/OpenUSD", desc: "Official open-source repository for Pixar USD libraries." },
+                    { label: "OpenUSD Proposal Forum", url: "https://github.com/PixarAnimationStudios/OpenUSD-proposals", desc: "Collaborative platform for new feature specifications and RFCs." },
+                    { label: "Alliance for OpenUSD", url: "https://aousd.org/", desc: "Standardization group steering the evolution of USD specs across platforms." },
+                    { label: "AOUSD Member Network", url: "https://aousd.org/members/", desc: "Index of global companies collaborating to scale OpenUSD adoption." },
+                    { label: "NVIDIA OpenUSD Developer Page", url: "https://developer.nvidia.com/openusd", desc: "Resources, SDKs, and tutorials for developing with OpenUSD." }
+                ]
+            },
+            {
+                id: "simulation",
+                name: "Simulation Platforms",
+                color: "#ec4899",
+                subtitle: "Controllable 3D Environments",
+                links: [
+                    { label: "NVIDIA Omniverse", url: "https://www.nvidia.com/en-us/omniverse/", desc: "Platform for creating and operating custom OpenUSD-based 3D simulation applications." },
+                    { label: "NVIDIA Isaac Sim", url: "https://developer.nvidia.com/isaac/sim", desc: "Robotics simulation toolkit built on Omniverse for synthetic data and AI training." },
+                    { label: "Habitat AI", url: "https://aihabitat.org/", desc: "A modular high-performance 3D simulator for embodied AI research by Meta." },
+                    { label: "Habitat-Lab GitHub", url: "https://github.com/facebookresearch/habitat-lab", desc: "Open-source framework to train and evaluate embodied agents in Habitat." },
+                    { label: "Unreal Engine", url: "https://www.unrealengine.com/", desc: "Advanced real-time 3D creation tool for immersive visual and simulation experiences." },
+                    { label: "Unity Robotics Hub", url: "https://github.com/Unity-Technologies/Unity-Robotics-Hub", desc: "Tools and tutorials for running robotics simulations inside Unity." }
+                ]
+            },
+            {
+                id: "twins",
+                name: "Digital Twins",
+                color: "#eab308",
+                subtitle: "Real Systems & Telemetry",
+                links: [
+                    { label: "Digital Twin Consortium", url: "https://www.digitaltwinconsortium.org/", desc: "An international consortium defining digital twin architectures and standards." },
+                    { label: "Definition of a Digital Twin", url: "https://www.digitaltwinconsortium.org/initiatives/the-definition-of-a-digital-twin/", desc: "Official reference document defining core characteristics of industrial twins." },
+                    { label: "DTC Member Search", url: "https://www.digitaltwinconsortium.org/dtcmembersearch/", desc: "Directory of DTC member organizations driving digital twin pilots." }
+                ]
+            },
+            {
+                id: "world-gen",
+                name: "World Generation / Marble",
+                color: "#a855f7",
+                subtitle: "AI Spatial Generation",
+                links: [
+                    { label: "World Labs", url: "https://www.worldlabs.ai/", desc: "Spatial intelligence studio developing generative 3D world models." },
+                    { label: "Marble by World Labs", url: "https://www.worldlabs.ai/marble", desc: "Generative world model interface creating persistent, interactive 3D spaces." },
+                    { label: "World Labs Documentation", url: "https://docs.worldlabs.ai/", desc: "API specs and integration guidelines for generated 3D environments." },
+                    { label: "World Labs Blog", url: "https://www.worldlabs.ai/blog", desc: "Latest research insights on spatial intelligence, Spark rendering, and the World API." }
+                ]
+            },
+            {
+                id: "world-model",
+                name: "World Model AI / JEPA",
+                color: "#3b82f6",
+                subtitle: "Latent Predictive Architectures",
+                links: [
+                    { label: "Meta V-JEPA Research Page", url: "https://ai.meta.com/research/vjepa/", desc: "Official research page detailing Joint-Embedding Predictive Architecture for video." },
+                    { label: "V-JEPA GitHub Repository", url: "https://github.com/facebookresearch/jepa", desc: "Source code for training Meta's Video Joint-Embedding Predictive Architecture." },
+                    { label: "I-JEPA GitHub Repository", url: "https://github.com/facebookresearch/ijepa", desc: "Meta's Image-based Joint-Embedding Predictive Architecture code." },
+                    { label: "V-JEPA 2 GitHub", url: "https://github.com/facebookresearch/vjepa2", desc: "Updated video modeling codebases for advanced agent prediction." },
+                    { label: "JEPA World Models GitHub", url: "https://github.com/facebookresearch/jepa-wms", desc: "Experimental world models leveraging JEPA latent representation spaces." },
+                    { label: "NIST AI Consortium", url: "https://www.nist.gov/artificial-intelligence/nist-ai-consortium", desc: "National Institute of Standards and Technology AI safety and measurement group." },
+                    { label: "MLCommons", url: "https://mlcommons.org/", desc: "An open engineering consortium developing standard benchmarks for AI." },
+                    { label: "NVIDIA Glossary: World Models", url: "https://www.nvidia.com/en-us/glossary/world-models/", desc: "Reference breakdown explaining latent prediction and physical model training." }
+                ]
+            },
+            {
+                id: "benchmarks",
+                name: "Benchmark Worlds",
+                color: "#22c55e",
+                subtitle: "Agent Testbeds & Gyms",
+                links: [
+                    { label: "Farama Foundation", url: "https://farama.org/", desc: "Consortium maintaining standard reinforcement learning and agent test environments." },
+                    { label: "MiniGrid Documentation", url: "https://minigrid.farama.org/", desc: "Official documentation for gridworld-style agent benchmark grids." },
+                    { label: "MiniGrid GitHub Repository", url: "https://github.com/Farama-Foundation/Minigrid", desc: "Open-source codebase for gridworld RL training environments." },
+                    { label: "DoorKey Environment Docs", url: "https://minigrid.farama.org/environments/minigrid/DoorKeyEnv/", desc: "Reference guide for the standard DoorKey agent task environment." },
+                    { label: "Crafter Benchmark Website", url: "https://danijar.com/project/crafter/", desc: "Reference details for the Crafter open-ended agent benchmark." },
+                    { label: "Crafter GitHub Repository", url: "https://github.com/danijar/crafter", desc: "Open-source codebase for the Crafter survival benchmark." },
+                    { label: "Craftax GitHub Repository", url: "https://github.com/MichaelTMatthews/Craftax", desc: "High-performance Jax-native open-ended benchmark inspired by Crafter." },
+                    { label: "DreamerV3 GitHub Repository", url: "https://github.com/danijar/dreamerv3", desc: "Official implementation of the DreamerV3 world model algorithm." }
+                ]
+            }
+        ];
+
+        let searchQuery = '';
+
+        function renderResources() {
+            const grid = document.getElementById('resources-grid');
+            grid.innerHTML = '';
+
+            const q = searchQuery.trim().toLowerCase();
+            let matchesFound = false;
+
+            resourceGroups.forEach(group => {
+                const filteredLinks = group.links.filter(link => {
+                    return !q || link.label.toLowerCase().includes(q) || link.desc.toLowerCase().includes(q);
+                });
+
+                if (filteredLinks.length > 0) {
+                    matchesFound = true;
+                    
+                    const section = document.createElement('div');
+                    section.className = 'group-section';
+                    section.style.setProperty('--group-color', group.color);
+
+                    const header = document.createElement('div');
+                    header.className = 'group-header';
+                    
+                    const title = document.createElement('h3');
+                    title.className = 'group-title';
+                    title.textContent = group.name;
+                    header.appendChild(title);
+
+                    const subtitle = document.createElement('span');
+                    subtitle.className = 'group-subtitle';
+                    subtitle.textContent = group.subtitle;
+                    header.appendChild(subtitle);
+
+                    section.appendChild(header);
+
+                    const linksGrid = document.createElement('div');
+                    linksGrid.className = 'links-grid';
+
+                    filteredLinks.forEach(link => {
+                        const card = document.createElement('div');
+                        card.className = 'link-card';
+
+                        const heading = document.createElement('h4');
+                        const anchor = document.createElement('a');
+                        anchor.href = link.url;
+                        anchor.target = '_blank';
+                        anchor.rel = 'noopener noreferrer';
+                        anchor.innerHTML = `${link.label} <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>`;
+                        heading.appendChild(anchor);
+                        card.appendChild(heading);
+
+                        const p = document.createElement('p');
+                        p.textContent = link.desc;
+                        card.appendChild(p);
+
+                        linksGrid.appendChild(card);
+                    });
+
+                    section.appendChild(linksGrid);
+                    grid.appendChild(section);
+                }
+            });
+
+            if (!matchesFound) {
+                const empty = document.createElement('div');
+                empty.className = 'wm-resources__empty';
+                empty.textContent = 'No resources match your search criteria.';
+                grid.appendChild(empty);
+            }
+        }
+
+        document.getElementById('search-input').oninput = (e) => {
+            searchQuery = e.target.value;
+            renderResources();
+        };
+
+        renderResources();
     </script>
 </body>
 
