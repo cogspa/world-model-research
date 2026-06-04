@@ -188,21 +188,25 @@
             font-size: 14px;
         }
 
-        /* Filter controls */
-        .wm-papers__filters {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            background: rgba(7, 8, 28, 0.3);
+        /* Filter controls and sticky header */
+        .wm-papers__controls {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(5, 6, 22, 0.75);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-md);
-            padding: 18px 24px;
+            padding: 16px 20px;
             margin-bottom: 32px;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
-        .filter-row-top {
+        .controls-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -210,108 +214,119 @@
             flex-wrap: wrap;
         }
 
-        .search-container {
+        .search-wrapper {
             position: relative;
-            max-width: 450px;
-            width: 100%;
+            flex: 1;
+            min-width: 250px;
         }
 
-        .search-container input {
+        .search-wrapper input {
             box-sizing: border-box;
             width: 100%;
             border: 1px solid var(--border-subtle);
-            border-radius: 999px;
+            border-radius: 99px;
             background: rgba(0, 0, 0, 0.3);
             color: var(--text-main);
-            padding: 10px 18px;
+            padding: 10px 18px 10px 40px;
             font: inherit;
             font-size: 13px;
             outline: none;
             transition: all 0.2s ease;
         }
 
-        .search-container input:focus {
+        .search-wrapper input:focus {
             border-color: var(--accent);
             box-shadow: 0 0 12px rgba(124, 92, 255, 0.25);
+            background: rgba(0, 0, 0, 0.5);
         }
 
-        .sort-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
             color: var(--text-muted);
+            pointer-events: none;
         }
 
-        .sort-select {
-            padding: 8px 28px 8px 12px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            color: var(--text-main);
+        .results-badge {
             font-size: 12px;
-            outline: none;
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml;utf8,<svg fill='rgba(163, 166, 199, 0.8)' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-            background-repeat: no-repeat;
-            background-position: right 6px center;
-            background-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle);
+            padding: 8px 16px;
+            border-radius: 99px;
+            white-space: nowrap;
         }
 
-        .chips-container {
+        #results-count {
+            color: var(--accent-strong);
+        }
+
+        .tags-filters {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            padding-top: 12px;
         }
 
-        .chip-btn {
-            padding: 6px 14px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-subtle);
-            border-radius: 99px;
-            color: var(--text-muted);
+        .filter-tag {
             font-size: 11px;
             font-weight: 600;
+            letter-spacing: 0.5px;
+            padding: 5px 12px;
+            border-radius: 99px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
             cursor: pointer;
             transition: all 0.2s ease;
+            user-select: none;
         }
 
-        .chip-btn:hover {
+        .filter-tag:hover {
             color: var(--text-main);
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.05);
             border-color: rgba(255, 255, 255, 0.15);
         }
 
-        .chip-btn.active {
+        .filter-tag.active {
             background: var(--accent-soft);
             color: var(--text-main);
             border-color: var(--accent);
-            box-shadow: 0 0 12px rgba(124, 92, 255, 0.2);
+            box-shadow: 0 0 10px rgba(124, 92, 255, 0.2);
         }
 
         /* Papers Grid */
         .papers-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+            gap: 24px;
         }
 
         .paper-card {
             background: rgba(7, 8, 28, 0.4);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-lg);
-            padding: 24px;
+            overflow: hidden;
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             box-shadow: var(--shadow-subtle);
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
-            overflow: hidden;
             display: flex;
-            flex-direction: row;
-            gap: 24px;
-            align-items: stretch;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .paper-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: var(--shadow-soft), 0 0 30px rgba(124, 92, 255, 0.15);
         }
 
         .paper-card::before {
@@ -319,139 +334,112 @@
             position: absolute;
             left: 0;
             top: 0;
-            bottom: 0;
-            width: 4px;
+            right: 0;
+            height: 4px;
             background: var(--tag-color, var(--accent));
             box-shadow: 0 0 10px var(--tag-color, var(--accent));
             z-index: 10;
         }
 
-        .paper-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(255, 255, 255, 0.12);
-            box-shadow: var(--shadow-soft), 0 0 20px rgba(124, 92, 255, 0.1);
-        }
-
-        .paper-thumbnail {
-            flex-shrink: 0;
-            width: 140px;
-            height: 198px;
-            background: #ffffff;
-            border: 1px solid rgba(0, 0, 0, 0.15);
-            border-radius: 6px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        .paper-thumb-wrapper {
             position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            background: #090a16;
             overflow: hidden;
-            color: #1b1e24;
-            font-family: "Times New Roman", Times, "Computer Modern Serif", serif;
-            padding: 12px 10px 10px 18px;
-            display: flex;
-            flex-direction: column;
-            user-select: none;
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
-        }
-
-        .paper-card:hover .paper-thumbnail {
-            transform: scale(1.04) rotate(-1deg);
-            box-shadow: 0 15px 35px rgba(124, 92, 255, 0.25), 0 8px 20px rgba(0, 0, 0, 0.6);
-        }
-
-        .thumb-arxiv {
-            position: absolute;
-            left: 3px;
-            top: 50%;
-            transform: translateY(-50%) rotate(270deg);
-            transform-origin: center;
-            font-size: 5.5px;
-            font-family: monospace;
-            color: #718096;
-            white-space: nowrap;
-            letter-spacing: 0.05em;
-            font-weight: 500;
-        }
-
-        .thumb-title {
-            font-size: 7px;
-            font-weight: 700;
-            line-height: 1.25;
-            margin-bottom: 2px;
-            text-align: center;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            color: #1a202c;
-        }
-
-        .thumb-authors {
-            font-size: 4.5px;
-            color: #4a5568;
-            text-align: center;
-            margin-bottom: 6px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-style: italic;
-        }
-
-        .thumb-abstract-label {
-            font-size: 5px;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 2px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #2d3748;
-        }
-
-        .thumb-abstract-text {
-            font-size: 3.8px;
-            line-height: 1.3;
-            color: #2d3748;
-            text-align: justify;
-            margin-bottom: 8px;
-            display: -webkit-box;
-            -webkit-line-clamp: 4;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .thumb-figure {
-            margin-top: auto;
-            border-top: 0.5px dashed #e2e8f0;
-            padding-top: 6px;
-            height: 62px;
+            border-bottom: 1px solid var(--border-subtle);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .thumb-figure svg {
+        .paper-thumb-wrapper img {
             width: 100%;
             height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
         }
 
-        .paper-details {
-            flex: 1;
+        .paper-card:hover .paper-thumb-wrapper img {
+            transform: scale(1.05);
+        }
+
+        /* Fallback placeholder style */
+        .thumb-placeholder {
+            position: absolute;
+            inset: 0;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .thumb-placeholder::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(transparent 19px, rgba(255, 255, 255, 0.02) 20px),
+                              linear-gradient(90deg, transparent 19px, rgba(255, 255, 255, 0.02) 20px);
+            background-size: 20px 20px;
+        }
+
+        .placeholder-arxiv {
+            font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", monospace;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-top: 8px;
+            z-index: 1;
+        }
+
+        .placeholder-label {
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            z-index: 1;
+        }
+
+        .paper-card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
             gap: 12px;
         }
 
-        .paper-header {
+        .paper-meta {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            gap: 16px;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .paper-rank {
+            color: var(--accent-strong);
+            text-shadow: 0 0 8px rgba(255, 179, 71, 0.2);
         }
 
         .paper-title {
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 700;
-            margin: 0 0 6px;
             line-height: 1.35;
+            margin: 0;
             color: var(--text-main);
-            letter-spacing: -0.01em;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 44px;
             transition: color 0.2s ease;
         }
 
@@ -459,79 +447,59 @@
             color: var(--tag-color, var(--accent));
         }
 
-        .paper-authors {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin: 0;
-            line-height: 1.4;
-        }
-
-        .paper-venue-year {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--accent-strong);
-            margin-bottom: 2px;
-        }
-
-        .paper-desc {
+        .paper-synopsis {
             font-size: 13px;
             line-height: 1.6;
             color: var(--text-muted);
             margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex-grow: 1;
+            min-height: 62px;
         }
 
-        .paper-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-            padding-top: 16px;
-            margin-top: auto;
-        }
-
-        .paper-tags {
+        .paper-chips {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
+            margin-top: 4px;
         }
 
-        .tag-badge {
+        .paper-chip {
             font-size: 10px;
             font-weight: 600;
-            padding: 3px 10px;
-            border-radius: 99px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.5px;
+            padding: 3px 8px;
+            border-radius: 4px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.06);
             color: var(--text-muted);
         }
 
-        .tag-badge.category {
-            background: rgba(var(--tag-color-rgb), 0.08);
-            border-color: rgba(var(--tag-color-rgb), 0.2);
-            color: var(--tag-color);
-        }
-
-        .paper-actions {
+        .paper-links {
             display: flex;
+            flex-wrap: wrap;
             gap: 8px;
-            align-items: center;
+            margin-top: auto;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        .btn-action {
+        .btn-paper {
+            flex: 1;
+            min-width: 80px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            padding: 6px 14px;
-            border-radius: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
             cursor: pointer;
             transition: all 0.2s ease;
             text-decoration: none;
@@ -540,33 +508,28 @@
             color: var(--text-muted);
         }
 
-        .btn-action:hover {
+        .btn-paper:hover {
             color: var(--text-main);
             border-color: rgba(255, 255, 255, 0.15);
             background: rgba(255, 255, 255, 0.05);
         }
 
-        .btn-action.primary {
+        .btn-paper.primary {
             background: var(--tag-color, var(--accent));
             border-color: var(--tag-color, var(--accent));
             color: #050616;
-            box-shadow: 0 4px 12px rgba(var(--tag-color-rgb), 0.18);
         }
 
-        .btn-action.primary:hover {
-            box-shadow: 0 6px 16px rgba(var(--tag-color-rgb), 0.3);
+        .btn-paper.primary:hover {
             filter: brightness(1.1);
-        }
-
-        .btn-action svg {
-            flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(var(--tag-color-rgb), 0.25);
         }
 
         .wm-papers__empty {
             background: rgba(7, 8, 28, 0.3);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-md);
-            padding: 40px;
+            padding: 48px;
             color: var(--text-muted);
             font-size: 13.5px;
             text-align: center;
@@ -590,60 +553,26 @@
         }
 
         @media (max-width: 768px) {
-            .wm-papers__filters {
-                padding: 16px;
+            .wm-papers__controls {
+                padding: 12px 16px;
             }
 
-            .filter-row-top {
+            .controls-row {
                 flex-direction: column;
                 align-items: stretch;
             }
 
-            .search-container, .sort-container {
-                max-width: unset;
+            .search-wrapper, .results-badge {
                 width: 100%;
             }
 
-            .sort-select {
-                flex: 1;
+            .results-badge {
+                text-align: center;
             }
 
-            .paper-card {
-                flex-direction: column;
-                align-items: center;
-                gap: 18px;
-                padding: 20px;
-            }
-
-            .paper-thumbnail {
-                width: 130px;
-                height: 184px;
-                padding: 10px 8px 8px 16px;
-            }
-
-            .paper-details {
-                width: 100%;
-            }
-
-            .paper-header {
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .paper-footer {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 16px;
-            }
-
-            .paper-actions {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-            }
-
-            .btn-action {
-                width: 100%;
+            .papers-list {
+                grid-template-columns: 1fr;
+                gap: 20px;
             }
         }
 
@@ -708,34 +637,24 @@
                     </div>
                 </header>
 
-                <!-- Filters -->
-                <div class="wm-papers__filters">
-                    <div class="filter-row-top">
-                        <div class="search-container" role="search">
-                            <input id="search-input" placeholder="Search papers by title, author, abstract, or code..." />
+                <!-- Controls -->
+                <div class="wm-papers__controls">
+                    <div class="controls-row">
+                        <div class="search-wrapper" role="search">
+                            <svg class="search-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input id="search-input" placeholder="Search by title, synopsis, or arXiv ID..." autocomplete="off" />
                         </div>
-                        <div class="sort-container">
-                            <span>Sort By:</span>
-                            <select id="sort-select" class="sort-select">
-                                <option value="newest">Newest First</option>
-                                <option value="oldest">Oldest First</option>
-                                <option value="alphabetical">Title A-Z</option>
-                            </select>
+                        <div class="results-badge">
+                            <span id="results-count">0</span> / <span id="total-count">95</span> Papers
                         </div>
                     </div>
-
-                    <div class="chips-container" id="category-chips">
-                        <button class="chip-btn active" data-category="all">All Topics</button>
-                        <button class="chip-btn" data-category="foundational">Foundational</button>
-                        <button class="chip-btn" data-category="imagination">Latent Imagination</button>
-                        <button class="chip-btn" data-category="diffusion">Diffusion Models</button>
-                        <button class="chip-btn" data-category="jepa">JEPA Architectures</button>
-                        <button class="chip-btn" data-category="transformer">Transformers</button>
+                    <div class="tags-filters" id="tag-filters">
+                        <!-- Dynamically generated tag buttons -->
                     </div>
                 </div>
 
                 <!-- Papers Grid -->
-                <div class="papers-list" id="papers-list">
+                <div class="papers-list" id="papers-grid">
                     <!-- Loaded dynamically via JavaScript -->
                 </div>
             </section>
@@ -757,468 +676,22 @@
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        const papersData = [
-            {
-                title: "Recurrent World Models Facilitate Policy Evolution",
-                authors: "David Ha, Jürgen Schmidhuber",
-                year: 2018,
-                venue: "NeurIPS 2018",
-                desc: "The seminal paper establishing the modern world model paradigm. Demonstrates how a generative recurrent neural network can be trained to simulate environments (hallucinating futures in a latent space), allowing compact agent policies to be trained entirely inside this dream environment.",
-                category: "foundational",
-                categoryLabel: "Foundational",
-                color: "#14b8a6", // Teal
-                colorRgb: "20, 184, 166",
-                arxiv: "https://arxiv.org/abs/1803.10122",
-                github: "https://github.com/hardmaru/WorldModelsExperiments",
-                pwc: "https://paperswithcode.com/paper/recurrent-world-models-facilitate-policy"
-            },
-            {
-                title: "Dream to Control: Learning Behaviors by Latent Imagination",
-                authors: "Danijar Hafner, Timothy Lillicrap, Jimmy Ba, Mohammad Norouzi",
-                year: 2019,
-                venue: "ICLR 2020",
-                desc: "Introduces the Dreamer framework. It trains a latent dynamics model (RSSM) from pixel inputs and learns behaviors entirely by projecting future trajectories inside the model's latent imagination, achieving state-of-the-art sample efficiency in reinforcement learning.",
-                category: "imagination",
-                categoryLabel: "Latent Imagination",
-                color: "#a855f7", // Purple
-                colorRgb: "168, 85, 247",
-                arxiv: "https://arxiv.org/abs/1912.01603",
-                github: "https://github.com/danijar/dreamer",
-                pwc: "https://paperswithcode.com/paper/dream-to-control-learning-behaviors-by"
-            },
-            {
-                title: "Mastering Atari with Discrete World Models",
-                authors: "Danijar Hafner, Timothy Lillicrap, Mohammad Norouzi, Jimmy Ba",
-                year: 2020,
-                venue: "ICLR 2021",
-                desc: "Introduces DreamerV2. It is the first model-based RL agent to achieve human-level performance and surpass the model-free Rainbow agent on the competitive Atari 55 benchmark, utilizing discrete latent categorical variables to represent environment dynamics.",
-                category: "imagination",
-                categoryLabel: "Latent Imagination",
-                color: "#a855f7", // Purple
-                colorRgb: "168, 85, 247",
-                arxiv: "https://arxiv.org/abs/2010.02193",
-                github: "https://github.com/danijar/dreamerv2",
-                pwc: "https://paperswithcode.com/paper/mastering-atari-with-discrete-world-models"
-            },
-            {
-                title: "Mastering Diverse Domains through World Models",
-                authors: "Danijar Hafner, Jente Pas, Ian Fischer, Ruoqi Zhang, Ricky Loynd, Connor Lee, Bowman He, Hiroki Furuta",
-                year: 2023,
-                venue: "arXiv preprint",
-                desc: "Introduces DreamerV3. Demonstrates that model-based RL agents can master diverse 3D and 2D environments (Atari, Minecraft, DMC, DMLab) with completely fixed hyperparameters, showcasing robust scaling properties and model-based learning stability.",
-                category: "imagination",
-                categoryLabel: "Latent Imagination",
-                color: "#a855f7", // Purple
-                colorRgb: "168, 85, 247",
-                arxiv: "https://arxiv.org/abs/2301.04104",
-                github: "https://github.com/danijar/dreamerv3",
-                pwc: "https://paperswithcode.com/paper/mastering-diverse-domains-through-world"
-            },
-            {
-                title: "DayDreamer: World Models for Physical Robot Learning",
-                authors: "Philipp Wu, Alejandro Escontrela, Danijar Hafner, Pieter Abbeel, Kenjihara",
-                year: 2022,
-                venue: "CoRL 2022",
-                desc: "Applies Dreamer to physical robot hardware. Shows that mobile robots (e.g., Boston Dynamics Spot) and robotic manipulators can learn quadruped locomotion, grasping, and visual tracking directly in the physical world, training inside latent dreams in just a few hours.",
-                category: "transformer",
-                categoryLabel: "Robotics & Physical AI",
-                color: "#f97316", // Orange
-                colorRgb: "249, 115, 22",
-                arxiv: "https://arxiv.org/abs/2206.14176",
-                github: "https://github.com/danijar/daydreamer",
-                pwc: "https://paperswithcode.com/paper/daydreamer-world-models-for-physical-robot"
-            },
-            {
-                title: "DIAMOND: Diffusion As a Model Of eNvironment Dreams",
-                authors: "Eloise Bruce, Alex Denis, Yann LeCun, Nicolas Usunier",
-                year: 2024,
-                venue: "arXiv preprint",
-                desc: "Introduces DIAMOND. It presents a reinforcement learning agent trained entirely inside a diffusion-based world model. Demonstrates how conditional diffusion processes can generate high-fidelity environment simulations to surpass traditional autoregressive dynamics models.",
-                category: "diffusion",
-                categoryLabel: "Diffusion Models",
-                color: "#ec4899", // Pink
-                colorRgb: "236, 72, 153",
-                arxiv: "https://arxiv.org/abs/2405.12399",
-                github: "https://github.com/eloise-bruce/diamond",
-                pwc: "https://paperswithcode.com/paper/diffusion-as-a-model-of-environment-dreams"
-            },
-            {
-                title: "IRIS: Implicit Reinforcement without Interaction at Scale",
-                authors: "Vincent Micheli, Luana Ruoso, François Fleuret",
-                year: 2022,
-                venue: "NeurIPS 2022",
-                desc: "Introduces IRIS, an agent trained inside a generative world model that models environment sequences using an autoregressive Transformer. IRIS plans future behaviors using discrete token prediction, reaching outstanding scores on the Atari 100k benchmarks.",
-                category: "transformer",
-                categoryLabel: "Transformer Models",
-                color: "#eab308", // Yellow
-                colorRgb: "234, 179, 8",
-                arxiv: "https://arxiv.org/abs/2209.00588",
-                github: "https://github.com/vincent-micheli/IRIS",
-                pwc: "https://paperswithcode.com/paper/iris-implicit-reinforcement-without"
-            },
-            {
-                title: "Genie: Generative Interactive Environments",
-                authors: "Bruce et al. (Google Research)",
-                year: 2024,
-                venue: "arXiv preprint",
-                desc: "A foundational generative model trained on unlabeled 2D platformer gameplay videos. It generates fully interactive, controllable, and responsive simulated environments from static text or image prompts, implementing action-conditioned latent transitions.",
-                category: "diffusion",
-                categoryLabel: "Diffusion Models",
-                color: "#ec4899", // Pink
-                colorRgb: "236, 72, 153",
-                arxiv: "https://arxiv.org/abs/2402.15391",
-                github: "https://github.com/google-research/google-research",
-                pwc: "https://paperswithcode.com/paper/genie-generative-interactive-environments"
-            },
-            {
-                title: "Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture (I-JEPA)",
-                authors: "Mahmoud Assran, Mathilde Caron, Ishan Misra, Piotr Bojanowski, Armand Joulin, Nicolas Usunier, Michael Rabbat, Yann LeCun",
-                year: 2023,
-                venue: "CVPR 2023",
-                desc: "The foundational paper on Joint-Embedding Predictive Architectures (JEPA). It proposes a self-supervised visual representation model that predicts missing target patch representations in a latent coordinate space rather than reconstructing pixels, avoiding collapse and artifacts.",
-                category: "jepa",
-                categoryLabel: "JEPA Architectures",
-                color: "#3b82f6", // Blue
-                colorRgb: "59, 130, 246",
-                arxiv: "https://arxiv.org/abs/2301.08243",
-                github: "https://github.com/facebookresearch/ijepa",
-                pwc: "https://paperswithcode.com/paper/self-supervised-learning-from-images-with-a"
-            },
-            {
-                title: "Learning Image Representations with Joint-Embedding Predictive Architecture (V-JEPA)",
-                authors: "Mahmoud Assran, Mathilde Caron, Piotr Bojanowski, Nicolas Usunier, Michael Rabbat, Yann LeCun",
-                year: 2024,
-                venue: "arXiv preprint",
-                desc: "Extends Meta's Joint-Embedding Predictive Architecture (JEPA) to video sequences. Trains visual agents to perform temporal and spatial predictions in latent feature spaces, establishing representation vectors for motion, planning, and control.",
-                category: "jepa",
-                categoryLabel: "JEPA Architectures",
-                color: "#3b82f6", // Blue
-                colorRgb: "59, 130, 246",
-                arxiv: "https://arxiv.org/abs/2404.08481",
-                github: "https://github.com/facebookresearch/jepa",
-                pwc: "https://paperswithcode.com/paper/v-jepa-video-joint-embedding-predictive-architecture"
-            }
-        ];
-
-        let filterCategory = 'all';
+        let papersData = [];
+        let selectedTags = new Set();
         let searchQuery = '';
-        let sortBy = 'newest';
 
-        function getArxivLabel(arxivUrl) {
-            if (!arxivUrl) return "arXiv:Preprint";
-            const parts = arxivUrl.split('/abs/');
-            if (parts.length > 1) {
-                return `arXiv:${parts[1]}`;
-            }
-            return "arXiv:Preprint";
+        // Helper to convert hex to rgb for styling drop shadows and text glow
+        function hexToRgb(hex) {
+            if (!hex) return '124, 92, 255';
+            const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+            const fullHex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(fullHex);
+            return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '124, 92, 255';
         }
 
-        function generateSvgFigure(paper) {
-            const title = paper.title.toLowerCase();
-            const color = paper.color;
-            
-            if (title.includes("recurrent world models")) {
-                return `
-                    <svg viewBox="0 0 100 50">
-                        <defs>
-                            <marker id="arrow-teal" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                                <path d="M 0 2 L 10 5 L 0 8 z" fill="#14b8a6"/>
-                            </marker>
-                        </defs>
-                        <rect x="5" y="15" width="20" height="20" rx="3" fill="#f8fafc" stroke="${color}" stroke-width="1.5" />
-                        <text x="15" y="27" font-size="9" font-family="sans-serif" font-weight="bold" fill="#1e293b" text-anchor="middle">V</text>
-                        
-                        <rect x="40" y="15" width="20" height="20" rx="3" fill="#f8fafc" stroke="#64748b" stroke-width="1.5" />
-                        <text x="50" y="27" font-size="9" font-family="sans-serif" font-weight="bold" fill="#1e293b" text-anchor="middle">M</text>
-                    
-                        <rect x="75" y="15" width="20" height="20" rx="3" fill="#f8fafc" stroke="#64748b" stroke-width="1.5" />
-                        <text x="85" y="27" font-size="9" font-family="sans-serif" font-weight="bold" fill="#1e293b" text-anchor="middle">C</text>
-                    
-                        <path d="M 25 25 L 38 25" stroke="#94a3b8" stroke-width="1" fill="none" marker-end="url(#arrow-teal)" />
-                        <path d="M 60 25 L 73 25" stroke="#94a3b8" stroke-width="1" fill="none" marker-end="url(#arrow-teal)" />
-                        <path d="M 85 15 C 85 5, 15 5, 15 13" stroke="#94a3b8" stroke-dasharray="2 2" stroke-width="1" fill="none" />
-                    </svg>
-                `;
-            } else if (title.includes("dream to control")) {
-                return `
-                    <svg viewBox="0 0 100 50">
-                        <defs>
-                            <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-                                <path d="M 0 2 L 10 5 L 0 8 z" fill="${color}"/>
-                            </marker>
-                        </defs>
-                        <circle cx="20" cy="25" r="6" fill="#f8fafc" stroke="#64748b" stroke-width="1.5" />
-                        <text x="20" y="27" font-size="6" font-family="sans-serif" fill="#1e293b" text-anchor="middle">s₁</text>
-                        
-                        <circle cx="50" cy="25" r="6" fill="#f8fafc" stroke="#64748b" stroke-width="1.5" />
-                        <text x="50" y="27" font-size="6" font-family="sans-serif" fill="#1e293b" text-anchor="middle">s₂</text>
-                    
-                        <circle cx="80" cy="25" r="6" fill="#f8fafc" stroke="#64748b" stroke-width="1.5" />
-                        <text x="80" y="27" font-size="6" font-family="sans-serif" fill="#1e293b" text-anchor="middle">s₃</text>
-                    
-                        <path d="M 26 25 L 43 25" stroke="#94a3b8" stroke-width="1" fill="none" marker-end="url(#arrow-purple)" />
-                        <path d="M 56 25 L 73 25" stroke="#94a3b8" stroke-width="1" fill="none" marker-end="url(#arrow-purple)" />
-                        <path d="M 30 15 C 30 10, 40 8, 50 10 C 60 8, 70 10, 70 15" stroke="${color}" stroke-dasharray="2 1.5" stroke-width="1" fill="none" />
-                    </svg>
-                `;
-            } else if (title.includes("discrete world models")) {
-                return `
-                    <svg viewBox="0 0 100 50">
-                        <rect x="15" y="10" width="8" height="8" rx="1.5" fill="#f8fafc" stroke="#64748b" stroke-width="1" />
-                        <rect x="25" y="10" width="8" height="8" rx="1.5" fill="#f8fafc" stroke="#64748b" stroke-width="1" />
-                        <rect x="35" y="10" width="8" height="8" rx="1.5" fill="${color}" fill-opacity="0.3" stroke="${color}" stroke-width="1.2" />
-                    
-                        <rect x="15" y="22" width="8" height="8" rx="1.5" fill="${color}" fill-opacity="0.3" stroke="${color}" stroke-width="1.2" />
-                        <rect x="25" y="22" width="8" height="8" rx="1.5" fill="#f8fafc" stroke="#64748b" stroke-width="1" />
-                        <rect x="35" y="22" width="8" height="8" rx="1.5" fill="#f8fafc" stroke="#64748b" stroke-width="1" />
-                    
-                        <path d="M 48 20 Q 60 10 72 20" stroke="#64748b" stroke-width="1.2" fill="none" stroke-dasharray="2 1" />
-                        <path d="M 48 25 L 72 25" stroke="${color}" stroke-width="1.5" fill="none" />
-                        
-                        <circle cx="80" cy="22" r="7" fill="#f8fafc" stroke="#64748b" stroke-width="1.5" />
-                        <text x="80" y="24.5" font-size="8" font-family="sans-serif" font-weight="bold" fill="#1e293b" text-anchor="middle">z</text>
-                    </svg>
-                `;
-            } else if (title.includes("diverse domains")) {
-                return `
-                    <svg viewBox="0 0 100 50">
-                        <line x1="15" y1="42" x2="85" y2="42" stroke="#64748b" stroke-width="1.5" />
-                        <line x1="15" y1="42" x2="15" y2="8" stroke="#64748b" stroke-width="1" />
-                        
-                        <rect x="25" y="28" width="12" height="14" fill="#cbd5e1" stroke="#64748b" stroke-width="0.8" />
-                        <rect x="44" y="20" width="12" height="22" fill="#94a3b8" stroke="#475569" stroke-width="0.8" />
-                        <rect x="63" y="10" width="12" height="32" fill="${color}" fill-opacity="0.4" stroke="${color}" stroke-width="1.5" />
-                        
-                        <path d="M 69 4 L 71 8 L 75 8 L 72 10 L 73 14 L 69 11 L 65 14 L 66 10 L 63 8 L 67 8 Z" fill="#ffb347" />
-                    </svg>
-                `;
-            } else if (title.includes("daydreamer")) {
-                return `
-                    <svg viewBox="0 0 100 50">
-                        <rect x="35" y="20" width="30" height="10" rx="2" fill="#cbd5e1" stroke="#475569" stroke-width="1" />
-                        <rect x="65" y="15" width="8" height="8" rx="1.5" fill="#94a3b8" stroke="#475569" stroke-width="1" />
-                        <line x1="62" y1="22" x2="66" y2="20" stroke="#475569" stroke-width="1.5" />
-                        <line x1="40" y1="30" x2="38" y2="38" stroke="${color}" stroke-width="2" stroke-linecap="round" />
-                        <line x1="38" y1="38" x2="42" y2="44" stroke="${color}" stroke-width="2" stroke-linecap="round" />
-                        <line x1="44" y1="30" x2="46" y2="36" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" />
-                        <line x1="46" y1="36" x2="44" y2="43" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" />
-                        <line x1="58" y1="30" x2="56" y2="38" stroke="${color}" stroke-width="2" stroke-linecap="round" />
-                        <line x1="56" y1="38" x2="60" y2="44" stroke="${color}" stroke-width="2" stroke-linecap="round" />
-                        <line x1="62" y1="30" x2="64" y2="37" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" />
-                        <line x1="64" y1="37" x2="62" y2="43" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" />
-                    </svg>
-                `;
-            } else if (title.includes("diamond")) {
-                return `
-                    <svg viewBox="0 0 100 50">
-                        <rect x="8" y="15" width="20" height="20" rx="2" fill="none" stroke="#64748b" stroke-width="1" />
-                        <circle cx="12" cy="20" r="0.6" fill="#64748b" /><circle cx="22" cy="18" r="0.7" fill="#64748b" />
-                        <circle cx="15" cy="25" r="0.5" fill="#64748b" /><circle cx="24" cy="30" r="0.6" fill="#64748b" />
-                        <circle cx="18" cy="22" r="0.5" fill="#64748b" /><circle cx="11" cy="31" r="0.7" fill="#64748b" />
-                        <circle cx="21" cy="26" r="0.5" fill="#64748b" /><circle cx="14" cy="28" r="0.6" fill="#64748b" />
-                    
-                        <path d="M 32 25 L 36 25" stroke="#94a3b8" stroke-width="1" fill="none" />
-                    
-                        <rect x="40" y="15" width="20" height="20" rx="2" fill="none" stroke="#64748b" stroke-width="1" />
-                        <line x1="45" y1="20" x2="55" y2="20" stroke="#cbd5e1" stroke-width="1.5" />
-                        <circle cx="43" cy="26" r="0.6" fill="#64748b" /><circle cx="56" cy="17" r="0.5" fill="#64748b" />
-                        <circle cx="50" cy="31" r="0.7" fill="#64748b" /><circle cx="48" cy="23" r="0.6" fill="#94a3b8" />
-                        <circle cx="57" cy="28" r="0.5" fill="#64748b" />
-                    
-                        <path d="M 64 25 L 68 25" stroke="#94a3b8" stroke-width="1" fill="none" />
-                    
-                        <rect x="72" y="15" width="20" height="20" rx="2" fill="none" stroke="${color}" stroke-width="1.5" />
-                        <rect x="76" y="28" width="12" height="3" fill="${color}" fill-opacity="0.7" />
-                        <circle cx="82" cy="20" r="2" fill="${color}" />
-                    </svg>
-                `;
-            } else if (title.includes("iris")) {
-                return `
-                    <svg viewBox="0 0 100 50">
-                        <rect x="30" y="5" width="40" height="40" fill="#f8fafc" stroke="#64748b" stroke-width="1.5" />
-                        <line x1="38" y1="5" x2="38" y2="45" stroke="#e2e8f0" stroke-width="1" />
-                        <line x1="46" y1="5" x2="46" y2="45" stroke="#e2e8f0" stroke-width="1" />
-                        <line x1="54" y1="5" x2="54" y2="45" stroke="#e2e8f0" stroke-width="1" />
-                        <line x1="62" y1="5" x2="62" y2="45" stroke="#e2e8f0" stroke-width="1" />
-                    
-                        <line x1="30" y1="13" x2="70" y2="13" stroke="#e2e8f0" stroke-width="1" />
-                        <line x1="30" y1="21" x2="70" y2="21" stroke="#e2e8f0" stroke-width="1" />
-                        <line x1="30" y1="29" x2="70" y2="29" stroke="#e2e8f0" stroke-width="1" />
-                        <line x1="30" y1="37" x2="70" y2="37" stroke="#e2e8f0" stroke-width="1" />
-                    
-                        <rect x="30" y="5" width="8" height="8" fill="${color}" fill-opacity="0.8" />
-                        <rect x="38" y="13" width="8" height="8" fill="${color}" fill-opacity="0.9" />
-                        <rect x="46" y="21" width="8" height="8" fill="${color}" fill-opacity="0.6" />
-                        <rect x="54" y="29" width="8" height="8" fill="${color}" fill-opacity="0.75" />
-                        <rect x="62" y="37" width="8" height="8" fill="${color}" fill-opacity="0.9" />
-                        
-                        <rect x="46" y="5" width="8" height="8" fill="${color}" fill-opacity="0.3" />
-                        <rect x="30" y="29" width="8" height="8" fill="${color}" fill-opacity="0.4" />
-                        <rect x="54" y="13" width="8" height="8" fill="${color}" fill-opacity="0.2" />
-                    </svg>
-                `;
-            } else if (title.includes("genie")) {
-                return `
-                    <svg viewBox="0 0 100 50">
-                        <line x1="5" y1="42" x2="95" y2="42" stroke="#64748b" stroke-width="1.5" />
-                        <rect x="15" y="32" width="10" height="10" rx="1.5" fill="${color}" fill-opacity="0.7" stroke="${color}" stroke-width="1" />
-                        <circle cx="19" cy="35" r="0.8" fill="#fff" /><circle cx="22" cy="35" r="0.8" fill="#fff" />
-                        <rect x="40" y="26" width="20" height="4" rx="1" fill="#cbd5e1" stroke="#475569" stroke-width="0.8" />
-                        <rect x="70" y="16" width="20" height="4" rx="1" fill="#cbd5e1" stroke="#475569" stroke-width="0.8" />
-                        <path d="M 28 25 Q 34 20 40 24" stroke="${color}" stroke-width="1" stroke-dasharray="2 1.5" fill="none" />
-                        <path d="M 38 22 L 41 24 L 38 26 Z" fill="${color}" />
-                    </svg>
-                `;
-            } else if (title.includes("i-jepa")) {
-                return `
-                    <svg viewBox="0 0 100 50">
-                        <rect x="5" y="10" width="25" height="25" fill="#f8fafc" stroke="#64748b" stroke-width="1" />
-                        <rect x="5" y="10" width="15" height="15" fill="#e2e8f0" stroke="#94a3b8" stroke-width="0.5" />
-                        <text x="12" y="19.5" font-size="7" font-family="sans-serif" fill="#64748b" text-anchor="middle">x</text>
-                        <rect x="15" y="20" width="15" height="15" fill="${color}" fill-opacity="0.25" stroke="${color}" stroke-width="1" />
-                        <text x="22" y="29.5" font-size="7" font-family="sans-serif" fill="${color}" text-anchor="middle">y</text>
-                        
-                        <path d="M 32 20 L 44 15" stroke="#94a3b8" stroke-width="1" fill="none" />
-                        <path d="M 32 28 L 44 33" stroke="#94a3b8" stroke-width="1" fill="none" />
-                        
-                        <rect x="46" y="5" width="20" height="16" rx="2" fill="#cbd5e1" stroke="#475569" stroke-width="1" />
-                        <text x="56" y="15" font-size="6" font-family="sans-serif" font-weight="bold" fill="#1e293b" text-anchor="middle">Enc_x</text>
-                        
-                        <rect x="46" y="29" width="20" height="16" rx="2" fill="${color}" fill-opacity="0.15" stroke="${color}" stroke-width="1" />
-                        <text x="56" y="39" font-size="6" font-family="sans-serif" font-weight="bold" fill="${color}" text-anchor="middle">Enc_y</text>
-                    
-                        <rect x="76" y="17" width="18" height="16" rx="2" fill="#94a3b8" stroke="#475569" stroke-width="1" />
-                        <text x="85" y="27.5" font-size="7" font-family="sans-serif" font-weight="bold" fill="#1e293b" text-anchor="middle">Pred</text>
-                        
-                        <path d="M 66 13 C 70 13, 72 20, 75 22" stroke="#94a3b8" stroke-width="1" fill="none" />
-                    </svg>
-                `;
-            } else if (title.includes("v-jepa")) {
-                return `
-                    <svg viewBox="0 0 100 50">
-                        <polygon points="15,5 35,5 30,25 10,25" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.8" />
-                        <polygon points="23,11 43,11 38,31 18,31" fill="#f1f5f9" stroke="#94a3b8" stroke-width="0.8" />
-                        <polygon points="31,17 51,17 46,37 26,37" fill="${color}" fill-opacity="0.15" stroke="${color}" stroke-width="1.2" />
-                        
-                        <polygon points="35,22 43,22 40,30 32,30" fill="${color}" fill-opacity="0.3" stroke="${color}" stroke-width="1" />
-                        <line x1="27" y1="16" x2="35" y2="22" stroke="${color}" stroke-width="1" stroke-dasharray="2 1.5" />
-                    
-                        <path d="M 54 25 L 66 25" stroke="#94a3b8" stroke-width="1" fill="none" />
-                    
-                        <rect x="68" y="15" width="24" height="20" rx="2" fill="#cbd5e1" stroke="#475569" stroke-width="1" />
-                        <text x="80" y="27.5" font-size="7" font-family="sans-serif" font-weight="bold" fill="#1e293b" text-anchor="middle">V-Pred</text>
-                    </svg>
-                `;
-            }
-            
-            return `
-                <svg viewBox="0 0 100 50">
-                    <circle cx="20" cy="15" r="4" fill="#cbd5e1" stroke="#475569" />
-                    <circle cx="20" cy="35" r="4" fill="#cbd5e1" stroke="#475569" />
-                    <circle cx="50" cy="15" r="4" fill="${color}" fill-opacity="0.3" stroke="${color}" />
-                    <circle cx="50" cy="35" r="4" fill="${color}" fill-opacity="0.3" stroke="${color}" />
-                    <circle cx="80" cy="25" r="4" fill="#cbd5e1" stroke="#475569" />
-                    <line x1="24" y1="15" x2="46" y2="15" stroke="#cbd5e1" />
-                    <line x1="24" y1="15" x2="46" y2="35" stroke="#cbd5e1" />
-                    <line x1="24" y1="35" x2="46" y2="15" stroke="#cbd5e1" />
-                    <line x1="24" y1="35" x2="46" y2="35" stroke="#cbd5e1" />
-                    <line x1="54" y1="15" x2="76" y2="25" stroke="#cbd5e1" />
-                    <line x1="54" y1="35" x2="76" y2="25" stroke="#cbd5e1" />
-                </svg>
-            `;
-        }
-
-        function renderPapers() {
-            const listEl = document.getElementById('papers-list');
-            listEl.innerHTML = '';
-
-            const q = searchQuery.trim().toLowerCase();
-
-            // Filter
-            let filtered = papersData.filter(paper => {
-                const categoryMatch = filterCategory === 'all' || paper.category === filterCategory;
-                const searchMatch = !q || 
-                    paper.title.toLowerCase().includes(q) || 
-                    paper.authors.toLowerCase().includes(q) || 
-                    paper.desc.toLowerCase().includes(q) || 
-                    paper.venue.toLowerCase().includes(q);
-                return categoryMatch && searchMatch;
-            });
-
-            // Sort
-            if (sortBy === 'newest') {
-                filtered.sort((a, b) => b.year - a.year);
-            } else if (sortBy === 'oldest') {
-                filtered.sort((a, b) => a.year - b.year);
-            } else if (sortBy === 'alphabetical') {
-                filtered.sort((a, b) => a.title.localeCompare(b.title));
-            }
-
-            // Render
-            if (filtered.length === 0) {
-                const empty = document.createElement('div');
-                empty.className = 'wm-papers__empty';
-                empty.textContent = 'No research papers match your search criteria.';
-                listEl.appendChild(empty);
-                return;
-            }
-
-            filtered.forEach(paper => {
-                const card = document.createElement('article');
-                card.className = 'paper-card';
-                card.style.setProperty('--tag-color', paper.color);
-                card.style.setProperty('--tag-color-rgb', paper.colorRgb);
-
-                const arxivLabel = getArxivLabel(paper.arxiv);
-                const svgFigure = generateSvgFigure(paper);
-
-                card.innerHTML = `
-                    <div class="paper-thumbnail">
-                        <div class="thumb-arxiv">${arxivLabel}</div>
-                        <div class="thumb-title">${escapeHtml(paper.title)}</div>
-                        <div class="thumb-authors">${escapeHtml(paper.authors)}</div>
-                        <div class="thumb-abstract-label">Abstract</div>
-                        <div class="thumb-abstract-text">${escapeHtml(paper.desc)}</div>
-                        <div class="thumb-figure">
-                            ${svgFigure}
-                        </div>
-                    </div>
-                    <div class="paper-details">
-                        <div class="paper-header">
-                            <div>
-                                <div class="paper-venue-year">${escapeHtml(paper.venue)} · ${paper.year}</div>
-                                <h3 class="paper-title">${escapeHtml(paper.title)}</h3>
-                                <p class="paper-authors">By <strong>${escapeHtml(paper.authors)}</strong></p>
-                            </div>
-                        </div>
-                        <p class="paper-desc">${escapeHtml(paper.desc)}</p>
-                        <div class="paper-footer">
-                            <div class="paper-tags">
-                                <span class="tag-badge category">${escapeHtml(paper.categoryLabel)}</span>
-                                <span class="tag-badge">${paper.year}</span>
-                            </div>
-                            <div class="paper-actions">
-                                <a href="${paper.arxiv}" target="_blank" rel="noopener noreferrer" class="btn-action primary">
-                                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                                    Paper
-                                </a>
-                                <a href="${paper.github}" target="_blank" rel="noopener noreferrer" class="btn-action">
-                                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-                                    Code
-                                </a>
-                                <a href="${paper.pwc}" target="_blank" rel="noopener noreferrer" class="btn-action">
-                                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>
-                                    PWC
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                listEl.appendChild(card);
-            });
-        }
-
+        // HTML escaping helper
         function escapeHtml(str) {
+            if (!str) return '';
             return str
                 .replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
@@ -1227,29 +700,209 @@
                 .replace(/'/g, "&#039;");
         }
 
-        // Search Handlers
-        document.getElementById('search-input').oninput = (e) => {
-            searchQuery = e.target.value;
-            renderPapers();
-        };
+        // Handle remote thumbnail loading error
+        function handleImageError(imgEl, accent, arxivId) {
+            const container = imgEl.parentElement;
+            imgEl.remove();
+            
+            const placeholder = document.createElement('div');
+            placeholder.className = 'thumb-placeholder';
+            placeholder.style.background = `linear-gradient(135deg, ${accent}15 0%, ${accent}05 100%)`;
+            placeholder.style.borderColor = accent;
+            
+            const rgb = hexToRgb(accent);
+            placeholder.innerHTML = `
+                <div class="placeholder-label">arXiv Paper</div>
+                <div class="placeholder-arxiv" style="color: ${accent}; text-shadow: 0 0 10px rgba(${rgb}, 0.4);">${arxivId}</div>
+            `;
+            container.appendChild(placeholder);
+        }
 
-        // Sort Handlers
-        document.getElementById('sort-select').onchange = (e) => {
-            sortBy = e.target.value;
-            renderPapers();
-        };
-
-        // Chips Handlers
-        document.getElementById('category-chips').onclick = (e) => {
-            if (e.target.classList.contains('chip-btn')) {
-                document.querySelectorAll('.chip-btn').forEach(btn => btn.classList.remove('active'));
-                e.target.classList.add('active');
-                filterCategory = e.target.getAttribute('data-category');
-                renderPapers();
+        // Render card grid based on filters and search
+        function render() {
+            const listEl = document.getElementById('papers-grid');
+            listEl.innerHTML = '';
+            
+            const query = searchQuery.trim().toLowerCase();
+            
+            // Filter records
+            const filtered = papersData.filter(paper => {
+                // Tag match (OR logic if tag list is active)
+                let tagMatch = true;
+                if (selectedTags.size > 0) {
+                    tagMatch = paper.tags && paper.tags.some(tag => selectedTags.has(tag));
+                }
+                
+                // Search query match
+                let searchMatch = true;
+                if (query) {
+                    const titleMatch = paper.title && paper.title.toLowerCase().includes(query);
+                    const synopsisMatch = paper.synopsis && paper.synopsis.toLowerCase().includes(query);
+                    const arxivMatch = paper.arxiv_id && paper.arxiv_id.toLowerCase().includes(query);
+                    searchMatch = titleMatch || synopsisMatch || arxivMatch;
+                }
+                
+                return tagMatch && searchMatch;
+            });
+            
+            // Sort by rank (ascending)
+            filtered.sort((a, b) => a.rank - b.rank);
+            
+            // Update counter
+            document.getElementById('results-count').textContent = filtered.length;
+            
+            if (filtered.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'wm-papers__empty';
+                empty.style.gridColumn = '1 / -1';
+                empty.textContent = 'No research papers match your search or tag criteria.';
+                listEl.appendChild(empty);
+                return;
             }
-        };
+            
+            filtered.forEach(paper => {
+                const card = document.createElement('article');
+                card.className = 'paper-card';
+                card.style.setProperty('--tag-color', paper.accent || '#7c5cff');
+                card.style.setProperty('--tag-color-rgb', hexToRgb(paper.accent));
+                
+                // Use remote thumbnail if non-null, else fallback to local thumbnail
+                const thumbUrl = paper.thumbnail_remote || paper.thumbnail_local || `assets/thumbs/${paper.id}.svg`;
+                
+                let actionButtons = '';
+                if (paper.paper_url) {
+                    actionButtons += `
+                        <a href="${paper.paper_url}" target="_blank" rel="noopener noreferrer" class="btn-paper primary">
+                            <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                            Paper
+                        </a>
+                    `;
+                }
+                if (paper.pdf_url) {
+                    actionButtons += `
+                        <a href="${paper.pdf_url}" target="_blank" rel="noopener noreferrer" class="btn-paper">
+                            <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                            PDF
+                        </a>
+                    `;
+                }
+                if (paper.code_url) {
+                    const isGithub = paper.code_url.includes('github.com');
+                    const codeIcon = isGithub
+                        ? `<svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>`
+                        : `<svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`;
+                    const codeLabel = isGithub ? 'Code' : 'Project';
+                    actionButtons += `
+                        <a href="${paper.code_url}" target="_blank" rel="noopener noreferrer" class="btn-paper">
+                            ${codeIcon}
+                            ${codeLabel}
+                        </a>
+                    `;
+                }
+                
+                const chips = paper.tags ? paper.tags.map(tag => `<span class="paper-chip">${escapeHtml(tag)}</span>`).join('') : '';
+                
+                card.innerHTML = `
+                    <div class="paper-thumb-wrapper">
+                        <img src="${thumbUrl}" 
+                             referrerpolicy="no-referrer" 
+                             loading="lazy" 
+                             alt="${escapeHtml(paper.title)}"
+                             onerror="handleImageError(this, '${escapeHtml(paper.accent || '#7c5cff')}', '${escapeHtml(paper.arxiv_id || '')}')" />
+                    </div>
+                    <div class="paper-card-body">
+                        <div class="paper-meta">
+                            <span>${paper.year}</span>
+                            <span class="paper-rank">#${paper.rank}</span>
+                        </div>
+                        <h3 class="paper-title" title="${escapeHtml(paper.title)}">${escapeHtml(paper.title)}</h3>
+                        <p class="paper-synopsis">${escapeHtml(paper.synopsis || '')}</p>
+                        <div class="paper-chips">
+                            ${chips}
+                        </div>
+                        <div class="paper-links">
+                            ${actionButtons}
+                        </div>
+                    </div>
+                `;
+                listEl.appendChild(card);
+            });
+        }
 
-        renderPapers();
+        // Generate dynamic clickable tag filter chips
+        function initFilters() {
+            const container = document.getElementById('tag-filters');
+            container.innerHTML = '';
+            
+            const allTags = new Set();
+            papersData.forEach(paper => {
+                if (paper.tags) {
+                    paper.tags.forEach(tag => allTags.add(tag));
+                }
+            });
+            
+            const sortedTags = Array.from(allTags).sort();
+            
+            sortedTags.forEach(tag => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-tag';
+                btn.textContent = tag;
+                btn.onclick = () => {
+                    if (selectedTags.has(tag)) {
+                        selectedTags.delete(tag);
+                        btn.classList.remove('active');
+                    } else {
+                        selectedTags.add(tag);
+                        btn.classList.add('active');
+                    }
+                    render();
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        // Debounce helper
+        function debounce(func, delay) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+
+        // Bind events
+        document.getElementById('search-input').oninput = debounce((e) => {
+            searchQuery = e.target.value;
+            render();
+        }, 150);
+
+        // Fetch data on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            fetch('data/papers.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Extract papers array from root papers key
+                    papersData = data.papers || [];
+                    document.getElementById('total-count').textContent = papersData.length;
+                    initFilters();
+                    render();
+                })
+                .catch(error => {
+                    console.error('Error fetching papers.json:', error);
+                    const listEl = document.getElementById('papers-grid');
+                    listEl.innerHTML = `
+                        <div class="wm-papers__empty" style="grid-column: 1 / -1; border-color: rgba(239, 68, 68, 0.3);">
+                            <p style="color: #ef4444; font-weight: bold;">Failed to load papers library.</p>
+                            <p style="font-size: 12px; margin-top: 8px;">Please verify that data/papers.json exists and is reachable.</p>
+                        </div>
+                    `;
+        });
+        });
     </script>
 </body>
 
